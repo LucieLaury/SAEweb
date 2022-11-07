@@ -7,8 +7,8 @@ class User
 {
     private string $email;
     private string $privilege;
-    private Serie $favoris;
-    private Serie $enCours;
+    private array $favoris;
+    private array $enCours;
 
     /**
      * @param string $email
@@ -19,7 +19,6 @@ class User
         $this->email = $email;
         $this->privilege = $privilege;
         $this->favoris = [];
-        $this->dejaVu = [];
         $this->enCours = [];
     }
 
