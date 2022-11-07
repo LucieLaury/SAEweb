@@ -31,6 +31,9 @@ class AfficheurCatalogue extends Afficheur
 
 
     public function affichageGlo():string{
+        $html = "";
+
+        for ($i = 0; i<$this->catalogue->__get())
 
     }
 

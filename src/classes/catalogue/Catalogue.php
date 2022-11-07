@@ -4,6 +4,7 @@ namespace iutnc\netVOD\catalogue;
 
 use iutnc\netVOD\db\ConnectionFactory;
 use iutnc\netVOD\exception\ExceptionListe;
+use iutnc\netVOD\exception\ProprieteInexistanteException;
 
 class Catalogue
 {
@@ -55,6 +56,11 @@ class Catalogue
             $catalogue->addSerie($serie);
         }
         return $catalogue;
+    }
+
+    public function __get(string $attribut):mixed {
+        if (property_exists ($this, $attribut)) return $this->$attribut;
+        throw new ProprieteInexistanteException ("$attribut: propriété inexistante");
     }
 
 
