@@ -34,13 +34,14 @@ class Dispatcher
                 $res = $act->execute();
                 break;
                 //cas de la connexion d'un utilisateur
-            case "signin":
-                $act = new AfficheurConnexion();
+            case "accueil-utilisateur":
+                $act = new AfficheurUtilisateur();
                 $res = $act->execute();
                 break;
                 //default : a voir s'il affiche une autre page de bienvenue un peu plus jolie
             default :
-                print "Bienvenue ! <br>";
+                $act = new AfficheurConnexion();
+                $res = $act->execute();
         }
         $this->renderPage($res);
     }
