@@ -2,7 +2,7 @@
 
 namespace iutnc\netVOD\afficheur;
 
-class accueilUser extends Afficheur
+class AccueilUser extends Afficheur
 {
 
     public function execute(): string
