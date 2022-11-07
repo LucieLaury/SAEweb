@@ -1,6 +1,7 @@
 <?php
 namespace iutnc\netVOD\user;
 use iutnc\netVOD\catalogue\Serie;
+use iutnc\netVOD\exception\ProprieteInexistanteException;
 
 class User
 {
@@ -20,6 +21,14 @@ class User
         $this->favoris = [];
         $this->dejaVu = [];
         $this->enCours = [];
+    }
+
+    /**
+     * @throws ProprieteInexistanteException
+     */
+    public function __get(string $attribut):mixed {
+        if (property_exists ($this, $attribut)) return $this->$attribut;
+        throw new ProprieteInexistanteException ("$attribut: propriété inexistante");
     }
 
 
