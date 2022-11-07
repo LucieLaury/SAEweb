@@ -17,15 +17,17 @@ class Serie
     private string $date;
     private array $episodes;
     private int $nbEpisodes;
+    private string $img;
 
     //CONST
-    public function __construct(int $id, string $ti, string $desc, int $ann, string $da){
+    public function __construct(int $id, string $ti, string $desc, int $ann, string $da, string $img){
         $this->id = $id;
         $this->titre = $ti;
         $this->descriptif = $desc;
         $this->annee = $ann;
         $this->date = $da;
         $this->nbEpisodes = 0;
+        $this->img = $img;
         $this->episodes = array();
     }
 
@@ -45,7 +47,8 @@ class Serie
                 $desc = $row['descriptif'];
                 $ann = $row['annee'];
                 $date = $row['date_ajout'];
-                $serie = new Serie($id, $ti, $desc, $ann, $date);
+                $img= $row['img'];
+                $serie = new Serie($id, $ti, $desc, $ann, $date, $img);
                 $serie->addEpisodeBD();
                 $creer = true;
             }
