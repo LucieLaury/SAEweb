@@ -5,6 +5,7 @@ namespace iutnc\netVOD\catalogue;
 
 
 use iutnc\netVOD\db\ConnectionFactory;
+use iutnc\netVOD\exception\ProprieteInexistanteException;
 
 class Episode{
 
@@ -25,6 +26,11 @@ class Episode{
         $this->resume = $resu;
         $this->duree = $dur;
         $this->file = $fi;
+    }
+
+    public function __get(string $attribut):mixed {
+        if (property_exists ($this, $attribut)) return $this->$attribut;
+        throw new ProprieteInexistanteException ("$attribut: propriété inexistante");
     }
 
 
