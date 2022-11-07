@@ -1,7 +1,7 @@
 {
   "autoload": {
     "psr-4": {
-      "iutnc\\deefy\\": "src/classes"
+      "iutnc\\netVOD\\": "src/classes"
     }
   }
 }
