@@ -4,8 +4,6 @@ namespace iutnc\netVOD\db;
 
 use PDO;
 
-
-
 class ConnectionFactory
 {
 

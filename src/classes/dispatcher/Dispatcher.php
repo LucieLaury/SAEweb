@@ -1,18 +1,24 @@
 <?php
 
-namespace iutnc\netVOD;
-
-
+namespace iutnc\netVOD\dispatcher;
 class Dispatcher
 {
+    private string $action;
+
+    /**
+     * @param string $action
+     */public function __construct(string $action)
+    {
+        $this->action = $action;
+    }
+
     /**
      * Méthode qui effectue l'action adaptée
      * @return void
      */
     public function run():void{
-        $action = $_GET['action'];
         $res = "";
-        switch ($action){
+        switch ($this->action){
                 //Cas de l'affichage détaillé d'un épisode
             case "afficher-episode":
                 $act = new AfficheurEpisode();
