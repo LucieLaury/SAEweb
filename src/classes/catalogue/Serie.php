@@ -3,6 +3,7 @@
 namespace iutnc\netVOD\catalogue;
 
 use iutnc\netVOD\db\ConnectionFactory;
+use iutnc\netVOD\exception\ExceptionListe;
 
 class Serie
 {
@@ -77,7 +78,10 @@ class Serie
                     unset($this->episodes[$i]);
                 }
             }
+        }else {
+            throw new ExceptionListe("Episode introuvable dans la série");
         }
+        $this->nbEpisodes--;
 
 
     }
