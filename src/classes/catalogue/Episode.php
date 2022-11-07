@@ -16,8 +16,12 @@ class Episode
 
 
     //CONST
-    public function __construct(string $titre){
-
+    public function __construct(int $num, string $ti, string $resu, int $dur, string $fi){
+        $this->numero = $num;
+        $this->titre = $ti;
+        $this->resume = $resu;
+        $this->duree = $dur;
+        $this->file = $fi;
     }
 
 
@@ -25,19 +29,21 @@ class Episode
         $c1 = $bd->prepare("Select * from episode where titre= :ti ;");
         $c1->bindParam(":ti",$titre);
         $c1->execute();
-        $p=null;
         $creer=false;
-        while ($d = $c1->fetch())
+        while ($row = $c1->fetch())
         {
             if (!$creer) {
-                $p = new Playlist($d['nom']);
+                $num = $row['numero'];
+                $ti = $row['titre'];
+                $resum = $row['resume'];
+                $dur = $row['duree'];
+                $fil = $row['file'];
+
+                $episode = new Episode($num, $ti, $resum, $dur, $fil);
                 $creer = true;
             }
-            $al = new AlbumTrack($d['titre'],$d['nom']);
-            $al->duree=$d['duree'];
-            $p->addPiste($al);
         }
-        return $p;
+        return $episode;
     }
 
 }
