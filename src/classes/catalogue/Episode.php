@@ -6,8 +6,7 @@ namespace iutnc\netVOD\catalogue;
 
 use iutnc\netVOD\db\ConnectionFactory;
 
-class Episode
-{
+class Episode{
 
     //ATTRIBUTS
     private int $id;
