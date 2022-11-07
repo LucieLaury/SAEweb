@@ -95,7 +95,7 @@ class Serie
         $req->execute();
         while ($row = $req->fetch()){
             $episode = Episode::find($row['titre']);
-            $this->addSerie($episode);
+            $this->addEpisode($episode);
         }
     }
 

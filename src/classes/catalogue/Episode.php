@@ -43,12 +43,13 @@ class Episode{
         while ($row = $c1->fetch())
         {
             if (!$creer) {
+                $id = $row['id'];
                 $num = $row['numero'];
                 $ti = $row['titre'];
                 $resum = $row['resume'];
                 $dur = $row['duree'];
                 $fil = $row['file'];
-                $episode = new Episode($num, $ti, $resum, $dur, $fil);
+                $episode = new Episode($id, $num, $ti, $resum, $dur, $fil);
                 $creer = true;
             }
         }

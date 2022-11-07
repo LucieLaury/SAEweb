@@ -14,6 +14,7 @@ class Catalogue
 
     public function __construct(){
         $this->series = array();
+        $this->nbSeries=0;
     }
 
     public function addSerie(Serie $serie): void{
