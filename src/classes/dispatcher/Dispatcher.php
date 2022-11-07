@@ -1,6 +1,8 @@
 <?php
 
 namespace iutnc\netVOD\dispatcher;
+use iutnc\netVOD\afficheur\AfficheurConnexion;
+
 class Dispatcher
 {
     private string $action;
