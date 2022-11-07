@@ -1,13 +1,15 @@
 <?php
 
-namespace iutnc\netVOD;
+namespace iutnc\netVOD\catalogue;
 
-use PDO;
 
-class Episode
-{
+
+use iutnc\netVOD\db\ConnectionFactory;
+
+class Episode{
 
     //ATTRIBUTS
+    private int $id;
     private int $numero;
     private string $titre;
     private string $resume;
@@ -16,7 +18,8 @@ class Episode
 
 
     //CONST
-    public function __construct(int $num, string $ti, string $resu, int $dur, string $fi){
+    public function __construct(int $id, int $num, string $ti, string $resu, int $dur, string $fi){
+        $this->id = $id;
         $this->numero = $num;
         $this->titre = $ti;
         $this->resume = $resu;
@@ -25,7 +28,8 @@ class Episode
     }
 
 
-    public static function find(string $titre, PDO $bd): Episode{
+    public static function find(string $titre): Episode{
+        $bd = ConnectionFactory::makeConnection();
         $c1 = $bd->prepare("Select * from episode where titre= :ti ;");
         $c1->bindParam(":ti",$titre);
         $c1->execute();

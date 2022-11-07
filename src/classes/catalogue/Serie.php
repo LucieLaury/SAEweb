@@ -1,6 +1,9 @@
 <?php
 
-namespace iutnc\netVOD;
+namespace iutnc\netVOD\catalogue;
+
+use iutnc\netVOD\db\ConnectionFactory;
+use iutnc\netVOD\exception\ExceptionListe;
 
 class Serie
 {
@@ -27,7 +30,8 @@ class Serie
 
 
     //METHODES
-    public static function find(string $titre, PDO $bd): Episode{
+    public static function find(string $titre): Episode{
+        $bd = ConnectionFactory::makeConnection();
         $c1 = $bd->prepare("Select * from serie where titre= :ti ;");
         $c1->bindParam(":ti",$titre);
         $c1->execute();
@@ -74,7 +78,10 @@ class Serie
                     unset($this->episodes[$i]);
                 }
             }
+        }else {
+            throw new ExceptionListe("Episode introuvable dans la série");
         }
+        $this->nbEpisodes--;
 
 
     }
