@@ -14,7 +14,8 @@ class RenderSerie
     }
 
     public function render():string{
-        $res = "<div><body><p> Nom de la série :";
+        $res = "<div style='width: 350px; height: 200px; background-color: darkslategray;
+color: white; text-align: center; overflow: auto; margin-bottom: 30px'><body><p> Nom de la série :";
         $res.=$this->s->titre;
         $res.="</p><br>";
         $res.="<p> Année de sortie :";
@@ -24,7 +25,7 @@ class RenderSerie
         $res.=$this->s->descriptif;
         $res.="</p><br>";
         $res.="<p> Nombre d'épisodes :";
-        $res.=$this->s->nbEpisode;
+        $res.=$this->s->nbEpisodes;
         $res.="</p><br>";
         $res.="</body></div>";
 
