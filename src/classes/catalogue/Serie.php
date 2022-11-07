@@ -30,7 +30,7 @@ class Serie
 
 
     //METHODES
-    public static function find(string $titre): Episode{
+    public static function find(string $titre): Serie{
         $bd = ConnectionFactory::makeConnection();
         $c1 = $bd->prepare("Select * from serie where titre= :ti ;");
         $c1->bindParam(":ti",$titre);
@@ -44,12 +44,12 @@ class Serie
                 $desc = $row['descriptif'];
                 $ann = $row['annee'];
                 $date = $row['date_ajout'];
-
-                $episode = new Episode($id, $ti, $desc, $ann, $date);
+                $serie = new Serie($id, $ti, $desc, $ann, $date);
+                $serie->addEpisodeBD();
                 $creer = true;
             }
         }
-        return $episode;
+        return $serie;
     }
 
 
@@ -84,6 +84,18 @@ class Serie
         $this->nbEpisodes--;
 
 
+    }
+
+
+    public function addEpisodeBD(){
+        $db = ConnectionFactory::makeConnection();
+        $req = $db->prepare("SELECT titre from episode where serie_id = :idS ;");
+        $req->bindParam(":idS", $this->id);
+        $req->execute();
+        while ($row = $req->fetch()){
+            $episode = Episode::find($row['titre']);
+            $this->addSerie($episode);
+        }
     }
 
 }

@@ -42,7 +42,6 @@ class Episode{
                 $resum = $row['resume'];
                 $dur = $row['duree'];
                 $fil = $row['file'];
-
                 $episode = new Episode($num, $ti, $resum, $dur, $fil);
                 $creer = true;
             }

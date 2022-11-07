@@ -2,6 +2,7 @@
 
 namespace iutnc\netVOD\catalogue;
 
+use iutnc\netVOD\db\ConnectionFactory;
 use iutnc\netVOD\exception\ExceptionListe;
 
 class Catalogue
@@ -40,6 +41,20 @@ class Catalogue
             throw new ExceptionListe("Serie introuvable dans le catalogue");
         }
         $this->nbSeries--;
+    }
+
+
+    public static function addSerieDB(): Catalogue{
+        $catalogue = new Catalogue();
+        //récupération de chaque série
+        $db = ConnectionFactory::makeConnection();
+        $req = $db->query("SELECT titre from serie;");
+        $req->execute();
+        while ($row = $req->fetch()){
+            $serie = Serie::find($row['titre']);
+            $catalogue->addSerie($serie);
+        }
+        return $catalogue;
     }
 
 
