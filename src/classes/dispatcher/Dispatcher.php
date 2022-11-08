@@ -70,6 +70,7 @@ class Dispatcher
         <head>
             <meta charset="UTF-8">
             <title>NetVOD</title>
+            <link rel="icon" type="image/png" sizes="64x64" href="src/Styles/img/favicon.ico">           
             <link rel="stylesheet" href="src/Styles/CSS/tailwind.css"/>
             <link rel="stylesheet" href="src/Styles/CSS/Catalogue.css"/>
         </head>
