@@ -30,9 +30,9 @@ class AfficheurEpisode extends \iutnc\netVOD\Afficheur
 
         $html.="<strong>".$episode->title."</strong>";
 
-        $html.="<p>".$episode->resume."</p>";
+        $html.="<p>".$episode->resume."</p><br>";
 
-        $html.="<p>".$episode->duree."</p>";
+        $html.="<p>".$episode->duree."</p><br>";
 
         return $html;
     }
