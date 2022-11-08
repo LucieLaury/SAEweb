@@ -1,41 +1,48 @@
 <?php
 
+namespace iutnc\netVOD\authentification;
 use iutnc\netVOD\db\ConnectionFactory;
 use iutnc\netVOD\exception\AlreadyRegisteredEmailException;
 use iutnc\netVOD\exception\BadPasswordException;
+use iutnc\netVOD\exception\NotAnEmailException;
 
 class Authentification
 {
     /**
      * @throws BadPasswordException
      * @throws AlreadyRegisteredEmailException
+     * @throws NotAnEmailException
      */
     public static function register(string $email, string $password) : void {
         $bd = ConnectionFactory::makeConnection();
         // Verify strength of password
-        if(!self::checkPassStrength($password, 10)) throw new BadPasswordException("Le mot de passe ne correspond pas à nos critères");
+        if(!self::checkPassStrength($password, 1)) throw new BadPasswordException("Le mot de passe ne correspond pas à nos critères");
         // Verify if email already exist
-        $query = $bd->prepare("SELECT * FROM User WHERE mail = ?");
-        $query->execute($email);
+        $query = $bd->prepare("SELECT * FROM utilisateur WHERE email = ?");
+        $query->bindParam(1, $email);
+        $query->execute();
         if($query->rowCount() > 0) throw new AlreadyRegisteredEmailException("Cet email est déjà enregistré");
         $query->closeCursor();
         // Sanitize the email
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL)) throw new NotAnEmailException("Ce n'est un email");
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
         // Hash the password
         $passwordHash =password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
         // Insert the user in database
-        $insert = $bd->prepare("INSERT INTO User (mail, password) value (?, ?)");
-        $insert->execute($email, $passwordHash);
+        $insert = $bd->prepare("INSERT INTO utilisateur (email, pwd) value (?, ?)");
+        $insert->bindParam(1, $email);
+        $insert->bindParam(2, $passwordHash);
+        $insert->execute();
         $query->closeCursor();
         $insert->closeCursor();
     }
 
     public static function checkPassStrength(string $password, int $minLength) : bool {
         $length = strlen($password) > $minLength;
-        $digit = preg_match("#\d#", $password);
-        $special = preg_match("#\W#", $password);
-        $lower = preg_match("#[a-z]#", $password);
-        $upper = preg_match("#[A-Z]]#", $password);
+        $digit = true; // preg_match("#\d#", $password);
+        $special = true; // preg_match("#\W#", $password);
+        $lower = true; // preg_match("#[a-z]#", $password);
+        $upper = true; // preg_match("#[A-Z]]#", $password);
         return ($length && $digit && $special && $lower && $upper);
     }
     public static function checkAccessLevel(int $required): bool {return false;}
@@ -53,7 +60,7 @@ class Authentification
      */
     public static function authenticate(string $email, string $passwd2check): void {
         $bd = \iutnc\deefy\db\ConnectionFactory::makeConnection();
-        $query = $bd->prepare("select * from User where email = ? ");
+        $query = $bd->prepare("select * from utilisateur where email = ? ");
         $query->execute($email);
         $data = $query->fetch(PDO::FETCH_ASSOC);
         $hash = $data['passwd'];
