@@ -62,7 +62,11 @@ class AfficheurSerie extends Afficheur
 
         $res.="<img src='$img' width='25%'/>";
         $res.="<div style='text-align: center; margin-left: 30px;'>
-                <p><strong>$titre</strong></p>
+                <div class='grid grid-cols-3 '>
+                <p class='col-start-2'><strong>$titre</strong></p>
+                 <button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-red-500 hover:to-yellow-500'>j'aime</button>
+                
+                </div>
                 <p>genre : </p>
                 <p>public visé : </p>
                 <p>descriptif : $desc</p>
