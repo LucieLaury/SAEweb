@@ -15,7 +15,7 @@ class Authentification
      * @throws AlreadyRegisteredEmailException
      * @throws NotAnEmailException
      */
-    public static function register(string $email, string $password) : void {
+    public static function register(string $email, string $password, string $nom, string $prenom, string $noCarte) : void {
         $bd = ConnectionFactory::makeConnection();
         // Verify strength of password
         if(!self::checkPassStrength($password, 1)) throw new BadPasswordException("Le mot de passe ne correspond pas à nos critères");
@@ -31,9 +31,12 @@ class Authentification
         // Hash the password
         $passwordHash =password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
         // Insert the user in database
-        $insert = $bd->prepare("INSERT INTO utilisateur (email, pwd) value (?, ?)");
-        $insert->bindParam(1, $email);
-        $insert->bindParam(2, $passwordHash);
+        $insert = $bd->prepare("INSERT INTO utilisateur value (:email, :nom, :prenom, :noCarte, :pwd)");
+        $insert->bindParam("email", $email);
+        $insert->bindParam("pwd", $passwordHash);
+        $insert->bindParam("nom", $nom);
+        $insert->bindParam("prenom", $prenom);
+        $insert->bindParam("noCarte", $noCarte);
         $insert->execute();
         $query->closeCursor();
         $insert->closeCursor();
