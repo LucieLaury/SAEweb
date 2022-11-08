@@ -77,7 +77,7 @@ class Dispatcher
         <body class="">
         <header class=" text-gray-300 bg-gray-800 flex flex-row justify-between py-8 shadow-2xl mb-4 "  ">
         <div class="  mx-8 ">
-            <a href="?Acceuil-utilisateur"><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">Accueil</button></a>
+            <a href="?Acceuil-utilisateur"><img src="src/Styles/img/Petitlogo.png" width="10%"></a>
         </div>
         <div class="flex flex-row mx-8 ">
             <div class="justify-start mx-8 "> 
@@ -99,5 +99,4 @@ class Dispatcher
         </html>";
         echo $res;
     }
-
 }

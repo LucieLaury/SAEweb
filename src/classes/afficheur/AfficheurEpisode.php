@@ -14,12 +14,14 @@ class AfficheurEpisode extends \iutnc\netVOD\Afficheur
     {
         $episode = Episode::find($_GET['episode']);
 
+        //Update de la liste en cours
         $user = $_SESSION['user'];
         $user = unserialize($user);
         $user->updateListeEnCours($episode);
         $user = serialize($user);
         $_SESSION['user'] = $user;
 
+        //Video
         $html = "";
         $html.="<video controls>";
         $html.="<source src=videos/";
@@ -28,6 +30,7 @@ class AfficheurEpisode extends \iutnc\netVOD\Afficheur
         $html.="type=\"video/mp4\">";
         $html.="</video>";
 
+        //Titre, resume, duree
         $html.="<strong>".$episode->title."</strong>";
 
         $html.="<p>".$episode->resume."</p><br>";

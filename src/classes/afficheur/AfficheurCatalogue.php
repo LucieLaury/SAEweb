@@ -17,9 +17,6 @@ class AfficheurCatalogue extends Afficheur
         $this->catalogue = Catalogue::addSerieDB();
     }
 
-
-
-
     public function execute(): string
     {
         $res="";
@@ -30,9 +27,6 @@ class AfficheurCatalogue extends Afficheur
         return $res;
 
     }
-
-
-
 
     public function affichageGlo():string{
         $html = "<div style='display: flex;justify-content: space-around; flex-direction: row; flex-wrap: wrap'>";
@@ -49,5 +43,4 @@ class AfficheurCatalogue extends Afficheur
 
         return $html;
     }
-
 }
