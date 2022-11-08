@@ -1,6 +1,7 @@
 <?php
 
 namespace iutnc\netVOD\afficheur;
+use iutnc\netVOD\render as render;
 
 class AccueilUser extends Afficheur
 {
@@ -13,7 +14,8 @@ class AccueilUser extends Afficheur
             $user = unserialize($user);
             $list = $user->favoris;
             foreach ($list as $value) {
-                $res .= $value->render();
+                $r = new render($value);
+                $res .= $r->render();
             }
             return $res;
         }
