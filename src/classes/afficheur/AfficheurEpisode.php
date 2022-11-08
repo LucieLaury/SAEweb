@@ -12,7 +12,7 @@ class AfficheurEpisode extends \iutnc\netVOD\Afficheur
      */
     public function execute(): string
     {
-        $episode = Episode::find($_GET['']);
+        $episode = Episode::find($_GET['episode']);
 
         $user = $_SESSION['user'];
         $user = unserialize($user);
