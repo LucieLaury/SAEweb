@@ -5,6 +5,8 @@ use iutnc\netVOD\db\ConnectionFactory;
 use iutnc\netVOD\exception\AlreadyRegisteredEmailException;
 use iutnc\netVOD\exception\BadPasswordException;
 use iutnc\netVOD\exception\NotAnEmailException;
+use iutnc\netVOD\user\User;
+use PDO;
 
 class Authentification
 {
@@ -47,7 +49,17 @@ class Authentification
     }
     public static function checkAccessLevel(int $required): bool {return false;}
 
-    public static function loadProfile(string $email) : void {}
+    public static function loadProfile(string $email) : void {
+        $bd = ConnectionFactory::makeConnection();
+        $query = $bd->prepare("SELECT * FROM utilisateur WHERE email = ?");
+        $query->bindParam(1, $email);
+        $query->execute();
+        $data = $query->fetch();
+        session_start();
+        $user = new User($email, $data['nom'], $data['prenom'], $data['noCarte']);
+        $_SESSION['user'] = serialize($user);
+        var_dump($user);
+    }
 
     public static function checkOwner(int $oId, int $plId):bool {return false;}
 
@@ -59,11 +71,12 @@ class Authentification
      * @throws BadPasswordException
      */
     public static function authenticate(string $email, string $passwd2check): void {
-        $bd = \iutnc\deefy\db\ConnectionFactory::makeConnection();
+        $bd = ConnectionFactory::makeConnection();
         $query = $bd->prepare("select * from utilisateur where email = ? ");
-        $query->execute($email);
+        $query->bindParam(1, $email);
+        $query->execute();
         $data = $query->fetch(PDO::FETCH_ASSOC);
-        $hash = $data['passwd'];
+        $hash = $data['pwd'];
         if(!password_verify($passwd2check, $hash)) throw new BadPasswordException("Le mot de passe ou l'identifiant saisi est incorrecte");
     }
 

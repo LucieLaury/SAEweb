@@ -8,18 +8,24 @@ use iutnc\netVOD\exception\ProprieteInexistanteException;
 class User
 {
     private string $email;
-    private string $privilege;
+    private string $nom;
+    private string $prenom;
+    private string $noCarte;
     private array $favoris;
     private array $enCours;
 
     /**
      * @param string $email
-     * @param string $privilege
+     * @param string $nom
+     * @param string $prenom
+     * @param string $noCarte
      */
-    public function __construct(string $email, string $privilege)
+    public function __construct(string $email, string $nom, string $prenom, string $noCarte)
     {
         $this->email = $email;
-        $this->privilege = $privilege;
+        $this->nom = $nom;
+        $this->prenom = $prenom;
+        $this->noCarte = $noCarte;
         $this->favoris = [];
         $this->enCours = [];
     }
