@@ -38,12 +38,11 @@ color: white; text-align: center; overflow: auto; margin-bottom: 30px; '><body><
 
     public function render():string{
         $img = $this->s->__get("img");
-        $res = "<div style='width: 200px; height: 300px; background-color: darkslategray;
-color: white; text-align: center; overflow: auto; margin-bottom: 30px; '><body><p style='margin-left: 1em; 
-margin-right: 1em'> Nom de la série : ";
+        $res = "<div class='mx-4 shadow-2xl rounded-xl w-52 h-72 bg-gray-700 text-center text-white mb-1'
+style='overflow: auto; '><body><p class='mx-4'> Nom de la série : ";
         $res.=$this->s->titre;
         $res.="</p>";
-        $res.="<img src='$img' width='80%' style='margin-left: 1em; margin-right: 1em'/>";
+        $res.="<img src='$img' width='80%' class='mx-4'/>";
         $res.="</body></div>";
 
         return $res;
