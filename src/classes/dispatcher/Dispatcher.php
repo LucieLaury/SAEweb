@@ -67,9 +67,26 @@ class Dispatcher
         <head>
             <meta charset="UTF-8">
             <title>NetVOD</title>
+            <link rel="stylesheet" href="src/Styles/CSS/tailwind.css"/>
             <link rel="stylesheet" href="src/Styles/CSS/Catalogue.css"/>
         </head>
-        <body>
+        <body class="">
+        <header class=" text-gray-300 bg-gray-800 flex flex-row justify-between py-8 shadow-2xl mb-4 "  ">
+        <div class="  mx-8 ">
+            <a href="?Acceuil-utilisateur"><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">Accueil</button></a>
+        </div>
+        <div class="flex flex-row mx-8 ">
+            <div class="justify-start mx-8 "> 
+            <a href="?register"><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">test</button></a>
+
+            <a href="?register"><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">test1</button></a>
+            <a href="?register"><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">test2</button></a>
+            </div>
+            <div  class=""> 
+               <a href="?register"><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">Se déconnecter</button></a>
+            </div>
+        </div>
+        </header>
         END;
 
         $res .= $html;
@@ -78,4 +95,5 @@ class Dispatcher
         </html>";
         echo $res;
     }
+
 }
