@@ -28,7 +28,7 @@ class AfficheurSerie extends Afficheur
 
     public function getTitre(int $id, \PDO $bd): string{
 
-        $req = $bd->prepare("SELECT titre from serie where id = :id");
+        $req = $this->db->prepare("SELECT titre from serie where id = :id");
         $req->bindParam(":id", $id);
         $req->execute();
         $row = $req->fetch();
@@ -39,9 +39,39 @@ class AfficheurSerie extends Afficheur
     public function execute(): string
     {
         $res="";
-        $render = new RenderEpisode($this->serie);
-        $res .= $render->render();
+        $res.=$this->affichageSerie();
+        $episodes = $this->serie->__get('episodes');
+        for ($i = 0; $i<$this->serie->__get("nbEpisodes"); $i++){
+            $episodeC = $episodes[$i];
+            $re = new RenderEpisode($episodeC);
+            $res .= $re->render();
+        }
 
+
+        return $res;
+    }
+
+    public function affichageSerie(): string{
+        $img = $this->serie->__get("img");
+        $titre = $this->serie->titre;
+        $desc = $this->serie->descriptif;
+        $annee = $this->serie->annee;
+        $date = $this->serie->date;
+
+        $res="<div style='display: flex; flex-direction: row; margin-bottom: 50px;'>";
+
+        $res.="<img src='$img' width='25%'/>";
+        $res.="<div style='text-align: center; margin-left: 30px;'>
+                <p><strong>$titre</strong></p>
+                <p>genre : </p>
+                <p>public visé : </p>
+                <p>descriptif : $desc</p>
+                <p>année de sortie : $annee</p>
+                <p>date d'ajout : $date</p>
+            </div>";
+
+
+        $res.="</div>";
         return $res;
     }
 

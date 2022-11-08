@@ -2,39 +2,33 @@
 
 namespace iutnc\netVOD\render;
 
+use iutnc\netVOD\catalogue\Episode;
 use iutnc\netVOD\catalogue\Serie;
 
 class RenderEpisode
 {
 
-    protected Serie $s;
+    protected Episode $e;
 
-    public function __construct(Serie $s)
+    public function __construct(Episode $e)
     {
-        $this->s = $s;
+        $this->e = $e;
     }
 
     public function render():string{
-        $img = $this->s->__get("img");
-        $titre = $this->s->titre;
-        $desc = $this->s->descriptif;
-        $annee = $this->s->annee;
-        $date = $this->s->date;
+        $no = $this->e->__get('numero');
+        $titre = $this->e->__get('titre');
+        $duree = $this->e->__get('duree');
 
-        $res="<div style='display: flex; flex-direction: row;'>";
-
-            $res.="<img src='$img' width='25%'/>";
-            $res.="<div style='text-align: center; margin-left: 30px;'>
-                <p><strong>$titre</strong></p>
-                <p>genre : </p>
-                <p>public visé : </p>
-                <p>descriptif : $desc</p>
-                <p>année de sortie : $annee</p>
-                <p>date d'ajout : $date</p>
-            </div>";
+        $res = "<div style='display: flex;justify-content: space-around; flex-direction: row; flex-wrap: wrap'>";
+        $res .= "<div class='mx-4 shadow-2xl rounded-xl w-52 h-72 bg-gray-700 text-center text-white mb-1'
+style='overflow: auto; '>";
+        $res .= "<p><strong>$no</strong></p>";
+        $res .= "<p><strong>$titre</strong></p>";
+        $res .= "<p>durée : $duree</p>";
 
 
-        $res.="</div>";
+        $res .= "</div>";
 
 
 
