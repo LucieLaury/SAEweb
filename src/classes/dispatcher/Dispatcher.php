@@ -3,6 +3,7 @@
 namespace iutnc\netVOD\dispatcher;
 use iutnc\netVOD\afficheur\AfficheurCatalogue;
 use iutnc\netVOD\afficheur\AfficheurConnexion;
+use iutnc\netVOD\afficheur\AfficheurRegistrer;
 
 class Dispatcher
 {
@@ -25,33 +26,32 @@ class Dispatcher
                 //Cas de l'affichage détaillé d'un épisode
             case "afficher-episode":
                 $act = new AfficheurEpisode();
-                $res = $act->execute();
                 break;
                 //Cas de l'affichage d'une série contenant des épisodes
             case "afficher-serie":
                 $act = new AfficheurSerie();
-                $res = $act->execute();
                 break;
                 //Cas de l'affichage des commentaires d'une série
             case "afficher-commentaires":
                 $act = new AfficheurCommentaires();
-                $res = $act->execute();
                 break;
                 //Cas de l'affichage d'un catalogue
             case "afficher-catalogue":
                 $act = new AfficheurCatalogue();
-                $res = $act->execute();
                 break;
                 //cas de la connexion d'un utilisateur
             case "accueil-utilisateur":
                 $act = new AfficheurUtilisateur();
-                $res = $act->execute();
+                break;
+            case "register":
+                $act = new AfficheurRegistrer();
                 break;
                 //default : a voir s'il affiche une autre page de bienvenue un peu plus jolie
             default :
                 $act = new AfficheurConnexion();
-                $res = $act->execute();
+
         }
+        $res = $act->execute();
         $this->renderPage($res);
     }
 
