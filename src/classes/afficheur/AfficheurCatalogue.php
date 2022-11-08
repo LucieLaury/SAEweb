@@ -38,10 +38,11 @@ class AfficheurCatalogue extends Afficheur
         $html = "<div style='display: flex;justify-content: space-around; flex-direction: row; flex-wrap: wrap'>";
         $series = $this->catalogue->__get("series");
         for ($i = 0; $i<$this->catalogue->__get("nbSeries"); $i++){
-            $nomDiv = "serie_".$i;
             $serieC = $series[$i];
+            $titre = $serieC->__get("titre");
             $re = new RenderSerie($serieC);
             $html .= $re->render();
+
         }
 
         $html .="</div>";

@@ -38,12 +38,15 @@ color: white; text-align: center; overflow: auto; margin-bottom: 30px; '><body><
 
     public function render():string{
         $img = $this->s->__get("img");
-        $res = "<div class='mx-4 shadow-2xl rounded-xl w-52 h-72 bg-gray-700 text-center text-white mb-1'
-style='overflow: auto; '><body><p class='mx-4'> Nom de la série : ";
-        $res.=$this->s->titre;
+        $titre = $this->s->__get("titre");
+        $res = "<a href='index.php?action=afficher-serie&amp;titre=".$titre."'>";
+        $res .= "<div class='mx-4 shadow-2xl rounded-xl w-52 h-72 bg-gray-700 text-center text-white mb-1'
+style='overflow: auto; '><p class='mx-4'> Nom de la série : ";
+        $res.=$titre;
         $res.="</p>";
         $res.="<img src='$img' width='80%' class='mx-4'/>";
-        $res.="</body></div>";
+        $res.="</div>";
+        $res .= "</a>";
 
         return $res;
 
