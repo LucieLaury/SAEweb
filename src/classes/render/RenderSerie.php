@@ -39,7 +39,8 @@ color: white; text-align: center; overflow: auto; margin-bottom: 30px; '><body><
     public function render():string{
         $img = $this->s->__get("img");
         $titre = $this->s->__get("titre");
-        $res = "<a href='index.php?action=afficher-serie&amp;titre=".$titre."'>";
+        $id = $this->s->__get('id');
+        $res = "<a href='index.php?action=afficher-serie&amp;id=".$id."'>";
         $res .= "<div class='mx-4 shadow-2xl rounded-xl w-52 h-72 bg-gray-700 text-center text-white mb-1'
 style='overflow: auto; '><p class='mx-4'> Nom de la série : ";
         $res.=$titre;
