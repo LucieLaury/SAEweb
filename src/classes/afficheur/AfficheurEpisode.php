@@ -31,7 +31,9 @@ class AfficheurEpisode extends Afficheur
         //Video
         $html = "";
 
-        $html .= "<div class='max-w-2xl' style='text-align: left; margin-left: 30px;'>";
+        $html .= "<div class='max-w-2xl' style='text-align: left; margin-left: 50px;'>";
+
+        //$html .="<div class='mx-4 shadow-2xl rounded-xl w-52 h-72 bg-gray-700 text-center text-white mb-1' style='overflow: auto; '>";
 
         $html.="<video controls>";
         $html.="<source src=videos/";
