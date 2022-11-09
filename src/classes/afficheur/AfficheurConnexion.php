@@ -26,11 +26,11 @@ class AfficheurConnexion extends Afficheur
                         <input type="password" name="pw"class="shadow rounded" required>
                     </div>
                      <div class="d-flex justify-center">
-                        <button type="submit" class="mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-red-500 hover:to-yellow-500">Se connecter</button>
+                        <button type="submit" class="mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400">Se connecter</button>
                     </div>
                     </form>
-                    <a href="?action=register"><button  class="mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-red-500 hover:to-yellow-500">S'enregistrer</button></a>
-                    <a href="?action=forgot"><button  class="mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-red-500 hover:to-yellow-500">Mot de passe oublié ?</button></a>
+                    <a href="?action=register"><button  class="mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400">S'enregistrer</button></a>
+                    <a href="?action=forgot"><button  class="mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400">Mot de passe oublié ?</button></a>
                 </section>
                  
                 END;
