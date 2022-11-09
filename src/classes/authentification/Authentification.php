@@ -1,9 +1,11 @@
 <?php
 
 namespace iutnc\netVOD\authentification;
+use Exception;
 use iutnc\netVOD\db\ConnectionFactory;
 use iutnc\netVOD\exception\AlreadyRegisteredEmailException;
 use iutnc\netVOD\exception\BadPasswordException;
+use iutnc\netVOD\exception\CardNotExistingException;
 use iutnc\netVOD\exception\NotAnEmailException;
 use iutnc\netVOD\user\User;
 use PDO;
@@ -14,10 +16,12 @@ class Authentification
      * @throws BadPasswordException
      * @throws AlreadyRegisteredEmailException
      * @throws NotAnEmailException
+     * @throws CardNotExistingException
      */
     public static function register(string $email, string $password, string $nom, string $prenom, string $noCarte) : void {
         $bd = ConnectionFactory::makeConnection();
         // Verify strength of password
+        if(strlen($noCarte) !== 16) throw new CardNotExistingException("La longueur ne correspond pas a un code valide");
         if(!self::checkPassStrength($password, 1)) throw new BadPasswordException("Le mot de passe ne correspond pas à nos critères");
         // Verify if email already exist
         $query = $bd->prepare("SELECT * FROM utilisateur WHERE email = ?");
@@ -50,7 +54,6 @@ class Authentification
         $upper = true; // preg_match("#[A-Z]]#", $password);
         return ($length && $digit && $special && $lower && $upper);
     }
-    public static function checkAccessLevel(int $required): bool {return false;}
 
     public static function loadProfile(string $email) : void {
         $bd = ConnectionFactory::makeConnection();
@@ -63,8 +66,6 @@ class Authentification
         $_SESSION['user'] = serialize($user);
         var_dump($user);
     }
-
-    public static function checkOwner(int $oId, int $plId):bool {return false;}
 
     public static function generateActivationToken(string $email) : string {return "";}
 
