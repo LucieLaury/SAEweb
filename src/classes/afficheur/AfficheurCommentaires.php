@@ -66,21 +66,23 @@ class AfficheurCommentaires extends Afficheur
         $res = "Commentaires de votre serie :</br>";
         while ($data = $query->fetch(PDO::FETCH_ASSOC)) {
             //parcours de tous les commentaires de la serie
+            if($data['commentaire']!= null) {
             $res .= $data["email"] . "</br>";
             if ($mail == $data["email"]) {
+                    $alreadyCommented = true;
+                    if ($this->edit) {
+                        $res .= "<form method=post>"
+                            . "<button name='valEdit' type=submit>valider</button><br>"
+                            . "<textarea type=text name=comm placeholder='votre commentaire' style='min-height: 100px;min-width: 400px;max-height: 100px;max-width: 400px;'></textarea>"
+                            . "</form>";
+                    } else {
+                        $res .= "<form method=post>"
+                            . "<button name='edit' type=submit>modifier commentaire</button><button name='rmv' type='submit'>supprimer commentaire</button><br>"
+                            . "</form>";
+                    }
+                }
                 // on verifie si le commentaire courant a ete poste par l'utilisateur courant
                 // cela permet de lui donner l'option de modifier ou supprimer son commentaire ainsi que de l'empecher d'en poser un nouveau
-                $alreadyCommented = $data['commentaire']!= null;
-                if ($this->edit) {
-                    $res .= "<form method=post>"
-                        . "<button name='valEdit' type=submit>valider</button><br>"
-                        . "<textarea type=text name=comm placeholder='votre commentaire' style='min-height: 100px;min-width: 400px;max-height: 100px;max-width: 400px;'></textarea>"
-                        . "</form>";
-                } else {
-                    $res .= "<form method=post>"
-                        . "<button name='edit' type=submit>modifier commentaire</button><button name='rmv' type='submit'>supprimer commentaire</button><br>"
-                        . "</form>";
-                }
             } else $res .= "</br>";
             $res .= $data['commentaire'] . "</br>";
             $res .= "</br></br>";
