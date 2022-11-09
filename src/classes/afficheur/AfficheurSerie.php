@@ -61,6 +61,13 @@ class AfficheurSerie extends Afficheur
         $date = $this->serie->date;
         $id = $this->serie->id;
 
+        if ($_SERVER['REQUEST_METHOD'] === "POST"){
+            if(isset($_POST['BLike'])){
+                $user = $_SESSION['user'];
+                $user = unserialize($user);
+                $user->LikeOuPas($this->serie->id);
+            }
+        }
 
         $res = "<div style='display: flex; flex-direction: row; margin-bottom: 50px;'>";
 
@@ -86,14 +93,7 @@ class AfficheurSerie extends Afficheur
                             <p>date d'ajout : $date</p>
                       </div>";
 
-        if ($_SERVER['REQUEST_METHOD'] === "POST"){
-            if(isset($_POST['BLike'])){
-                $user = $_SESSION['user'];
-                $user = unserialize($user);
-                $user->LikeOuPas($this->serie->id);
-                header("refresh");
-            }
-        }
+
         $res .= $this->noteEtComms();
         $res .= "</div>";
         return $res;
