@@ -86,11 +86,11 @@ class AfficheurSerie extends Afficheur
                             $res .= "</button></form>
                             
                              </div>
-                            <p>genre : </p>
-                            <p>public visé : </p>
-                            <p >descriptif : $desc</p>
-                            <p>année de sortie : $annee</p>
-                            <p>date d'ajout : $date</p>
+                            <p>Genre : </p>
+                            <p>Public visé : </p>
+                            <p>Descriptif : $desc</p>
+                            <p>Année de sortie : $annee</p>
+                            <p>Date d'ajout : $date</p>
                       </div>";
 
 
@@ -101,8 +101,6 @@ class AfficheurSerie extends Afficheur
 
     public function fav(): string
     {
-
-
         $user = $_SESSION['user'];
         $user = unserialize($user);
         $favoris = $user->listeType(User::FAVORIS);
@@ -110,11 +108,7 @@ class AfficheurSerie extends Afficheur
         if (!in_array($this->serie, $favoris)) return "<img src='src/Styles/img/starBorder.png' width='20%'>";
         else return "<img src='src/Styles/img/star.png' width='20%'>";
 
-
-
     }
-
-
 
     ////partie Nathanael:
     private function noteEtComms(): string{
@@ -164,22 +158,22 @@ class AfficheurSerie extends Afficheur
         }
         if($div!=0){
             $note = $tot / $div;
-            $res .= "note moyenne de la serie : $note";
+            $res .= "Note moyenne de la série : $note";
         }
         else {
-            $res .= "cette serie n'as encore jamais été notées, soyez le premier !";
+            $res .= "Cette série n'a encore jamais été notée, soyez le premier !";
         }
         if(!$alreadyNoted || $this->updatingNote){
             $res.= "<form method='post'>".
                     "<input type='number' name='note' placeholder='note /5' max='5'>".
-                    "<button name='Bnote' type='submit'>noter</button>";
+                    "<button name='Bnote' type='submit'>Noter</button>";
         }
         else{
             $res.= "<form method='post'>".
-                "<button name='BUpdateNote' type='submit'>changer ma note</button></br>"
-                ."<button name='BDeleteNote' type='submit'>supprimer ma note</button>";
+                "<button name='BUpdateNote' type='submit'>Changer ma note</button></br>"
+                ."<button name='BDeleteNote' type='submit'>Supprimer ma note</button>";
         }
-        $res .= "</form><a href=?action=afficher-commentaires&id=$id style='margin-top: 30px'>acceder aux commentaires</a></div>";
+        $res .= "</form><a href=?action=afficher-commentaires&id=$id style='margin-top: 30px'>Accéder aux commentaires</a></div>";
         return $res;
     }
 }
