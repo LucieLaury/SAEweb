@@ -47,13 +47,14 @@ class AfficheurCatalogue extends Afficheur
     }
 
     public function affichageFormulaire() : string {
-        $options = array("titre","récent","nombre d'épisodes","meilleurs notes");
+        $options = array("titre","récent","nombre d'épisodes","meilleures notes");
+        $value = array("titre", "date", "nbEpisodes", "note");
         $html = "<div style='width = 100%; text-align: center; margin-bottom: 40px'>".
             "<form method='post'>".
             "<select name='methode de tri'>".
             "<option value='none' selected hidden> trier par </option>";
-        foreach ($options as $op) {
-            $html .= "<option value=$op> $op </option>";
+        foreach (array_keys($options) as $key) {
+            $html .= "<option value=$value[$key]> $options[$key]</option>";
         }
         $html.=
             "</select></form></div>";
@@ -72,7 +73,7 @@ class AfficheurCatalogue extends Afficheur
 
 
     public function afficherRecherche():string{
-
+        print $_POST['trie'];
         $res = $this->affichageFormulaire();
         $res .= "<div style='display: flex;justify-content: space-around; flex-direction: row; flex-wrap: wrap'>";
         //séparation des mots de la methode post
@@ -84,7 +85,7 @@ class AfficheurCatalogue extends Afficheur
             $mot = $tab[$i];
             $tab1 = $this->requeteRech($mot, "titre", $seriesAffichees);
             $tab2 = $this->requeteRech($mot, "descriptif", $tab1);
-            $res .= $this->trierFilms($_POST['trie'], $tab2);
+            $res .= $this->trierFilms('titre', $tab2);
         }
         $res .="</div>";
         return $res;
@@ -111,24 +112,31 @@ class AfficheurCatalogue extends Afficheur
      * @param array $serieAff le tableau des séries qui vont être affichées
      * @return string l'html d'affichage des séries.
      */
-    public function trierFilms(string $trie="titre", array $serieAff):string{
-        $tabtrie=[];
-
-        for ($i=1; $i<count($serieAff)-1;$i++){
-            $val1 = $serieAff[$i]->__get($trie);
-            $min = $val1;
-            for ($j=$i+1;$j<count($serieAff);$j++){
-                $valeur = $serieAff[$j]->__get($trie);
-                if ($valeur < $min){
-                    $min = $valeur;
+    public function trierFilms(string $trie='titre', array $serieAff):string{
+        $i = 0;
+        foreach ($serieAff as $val1){
+            $min = $val1->__get($trie);
+            $j=0;
+            foreach ($serieAff as $val2){
+                if ($j>$i){
+                    $valtri = $val2->__get($trie);
+                    if ($valtri < $min) {
+                        $min = $valtri;
+                        $jbis = $j;
+                    }
                 }
+                $j++;
             }
-            if ($min > $val1)
+            if ($min < $val1){
+                $serieAff[$i]=$min;
+                $serieAff[$jbis]=$val1;
+            }
+            $i++;
         }
 
         $res="";
 
-        ksort($serieAff);
+        //ksort($serieAff);
 
         foreach ($serieAff as $serie) {
             $re = new RenderSerie($serie);
