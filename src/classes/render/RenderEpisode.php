@@ -16,24 +16,23 @@ class RenderEpisode
     }
 
     public function render():string{
+        $id = $this->e->__get('id');
         $no = $this->e->__get('numero');
         $titre = $this->e->__get('titre');
         $duree = $this->e->__get('duree');
 
-        $res = "<div style='display: flex;justify-content: center; flex-direction: row; flex-wrap: wrap'>";
+        $res = "<a href='index.php?action=afficher-episode&amp;id=".$id."'>";
+        $res .= "<div style='display: flex;justify-content: center; flex-direction: row; flex-wrap: wrap'>";
         $res .= "<div class='mx-4 shadow-2xl rounded-xl w-52 h-72 bg-gray-700 text-center text-white mb-1'
 style='overflow: auto; '>";
         $res .= "<p><strong>$no</strong></p>";
         $res .= "<p><strong>$titre</strong></p>";
-        $res .= "<p>durée : $duree</p>";
-
+        $res .= "<p>Durée : $duree minutes</p>";
 
         $res .= "</div>";
-
-
+        $res .= "</a>";
 
         return $res;
-
     }
 
 }
