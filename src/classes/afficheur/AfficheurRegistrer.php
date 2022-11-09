@@ -44,7 +44,8 @@ class AfficheurRegistrer extends Afficheur
 
             try {
                 Authentification::register($mail, $mdp, $nom, $prenom, $noCarte);
-                header("location:?action=Payement");
+                Authentification::loadProfile($mail);
+                header("location:?action=accueil-utilisateur");
             } catch (AlreadyRegisteredEmailException|BadPasswordException|NotAnEmailException $e) {
                 $html = $e->getMessage();
             }
