@@ -166,28 +166,37 @@ class User
     public function LikeOuPas(int $idserie){
         $db = ConnectionFactory::makeConnection();
         $serie = Serie::find($idserie);
-        if(in_array($serie, $this->favoris)){
-            foreach ($this->favoris as $cle=>$value ){
-                if($value===$serie){
-                    unset($this->favoris[$cle]);
-                }
-            }
+        $favoris = $this->listeType(User::FAVORIS);
+        if(!in_array($serie, $favoris)){
             $req = $db->prepare("SELECT idS from feedback
              where idS= :id and email= :mail;");
             $req->bindParam(":id", $idserie);
             $req->bindParam(":mail", $this->email);
             $req->execute();
             if( ($req->fetch())!=null){
-                $db->execute("insert into feedback(idS, email, videoPref) values ( $this->email, $idserie, true);");
+                $req2 = $db->prepare("UPDATE feedback SET videoPref = :bool WHERE idS = :id and email = :mail ;");
+
+                $b = true;
+                $req2->bindParam(":bool", $b);
+                $req2->bindParam(":id", $idserie);
+                $req2->bindParam(":mail", $this->email);
+                $req2->execute();
             }else{
-                $db->execute("UPDATE feedback SET videoPref = true WHERE idS = $idserie and email=$this->email ;");
+                $req2 = $db->prepare("insert into feedback(idS, email, videoPref) values ( :id, :mail,  :bool);");
+                $bo=true;
+                $req2->bindParam(":bool", $bo);
+                $req2->bindParam(":id", $idserie);
+                $req2->bindParam(":mail", $this->email);
+                $req2->execute();
             }
         }else{
-            $this->favoris[] = $serie;
-            $db->prepare("UPDATE feedback SET videoPref = false WHERE idS = $idserie and email = $this->email;");
-
+            $req3 = $db->prepare("UPDATE feedback SET videoPref = :bool WHERE idS = :id and email = :mail ;");
+            $bo = false;
+            $req3->bindParam(":bool", $bo);
+                $req3->bindParam(":id", $idserie);
+                $req3->bindParam(":mail", $this->email);
+                $req3->execute();
         }
-
     }
 
 

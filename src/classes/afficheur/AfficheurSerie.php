@@ -6,6 +6,7 @@ use iutnc\netVOD\catalogue\Serie;
 use iutnc\netVOD\db\ConnectionFactory;
 use iutnc\netVOD\render\RenderEpisode;
 use iutnc\netVOD\render\RenderSerie;
+use iutnc\netVOD\user\User;
 
 require_once 'Afficheur.php';
 
@@ -41,10 +42,10 @@ class AfficheurSerie extends Afficheur
     public function execute(): string
     {
         session_start();
-        $res="";
-        $res.=$this->affichageSerie();
+        $res = "";
+        $res .= $this->affichageSerie();
         $episodes = $this->serie->__get('episodes');
-        for ($i = 0; $i<$this->serie->__get("nbEpisodes"); $i++){
+        for ($i = 0; $i < $this->serie->__get("nbEpisodes"); $i++) {
             $episodeC = $episodes[$i];
             $re = new RenderEpisode($episodeC);
             $res .= $re->render();
@@ -58,17 +59,24 @@ class AfficheurSerie extends Afficheur
         $desc = $this->serie->descriptif;
         $annee = $this->serie->annee;
         $date = $this->serie->date;
+        $id = $this->serie->id;
 
 
-        $res="<div style='display: flex; flex-direction: row; margin-bottom: 50px;'>";
+        $res = "<div style='display: flex; flex-direction: row; margin-bottom: 50px;'>";
 
-                $res.="<img src='$img' class='min-w-m'  width='33%'/>";
-                $res.="<div class='max-w-2xl' style='text-align: center; margin-left: 30px;'>
+        $res .= "<img src='$img' class='min-w-m'  width='33%'/>";
+        $res .= "<script src='javascript/register.js'></script>";
+        $res .= "<div class='max-w-2xl' style='text-align: center; margin-left: 30px;'>
                             <div class='grid grid-cols-3 '>
                                 <p class='col-start-2'><strong>$titre</strong></p>
-                                <button>";
-                                $res.= $this->fav();
-                                $res.="</button>
+                                
+                                
+                                <form action='' method='post'>
+                                <button name='BLike' type='submit'>";
+
+
+                            $res .= $this->fav();
+                            $res .= "</button></form>
                             
                              </div>
                             <p>genre : </p>
@@ -78,31 +86,28 @@ class AfficheurSerie extends Afficheur
                             <p>date d'ajout : $date</p>
                       </div>";
 
-                $res.= $this->noteEtComms();
-        $res.="</div>";
+        if ($_SERVER['REQUEST_METHOD'] === "POST"){
+            if(isset($_POST['BLike'])){
+                $user = $_SESSION['user'];
+                $user = unserialize($user);
+                $user->LikeOuPas($this->serie->id);
+                header("refresh");
+            }
+        }
+        $res .= $this->noteEtComms();
+        $res .= "</div>";
         return $res;
     }
 
-    public function fav():string{
-        $db = ConnectionFactory::makeConnection();
-        $id = $this->serie->id;
+    public function fav(): string
+    {
+
 
         $user = $_SESSION['user'];
         $user = unserialize($user);
+        $favoris = $user->listeType(User::FAVORIS);
 
-        $mail = $user->email;
-
-
-
-        $req = $db->prepare("SELECT videoPref from feedback
-             where idS= :id and email= :mail;");
-        $req->bindParam(":id", $id);
-        $req->bindParam(":mail", $mail);
-        $req->execute();
-        $row = $req->fetch();
-        $pref =false;
-        if($row != null)$pref = $row['videoPref'];
-        if($pref == false)return "<img src='src/Styles/img/starBorder.png' width='20%'>";
+        if (!in_array($this->serie, $favoris)) return "<img src='src/Styles/img/starBorder.png' width='20%'>";
         else return "<img src='src/Styles/img/star.png' width='20%'>";
 
 
