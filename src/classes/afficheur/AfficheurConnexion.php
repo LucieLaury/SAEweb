@@ -7,18 +7,13 @@ use iutnc\netVOD\exception\BadPasswordException;
 
 class AfficheurConnexion extends Afficheur
 {
-
-
-    /**
-     * @throws BadPasswordException
-     */
     public function execute(): string
     {
         if($_SERVER['REQUEST_METHOD'] === "GET") {
             $html = <<<END
                 <section id="sec" class="flex flex-col justify-center mt-20 h-full my-auto" >
                 <h1 class="text-center text-2xl font-bold">Connexion</h1>
-                <form id="connexion" method="post" action=?Signin">
+                <form id="connexion" method="post">
                     <div class="flex flex-col w-80 mx-auto">
                         <label class="ml-1 font-bold">Email :</label>
                         <input type="text" name="mail" class="shadow rounded" placeholder="bernard@mail.com" required>
@@ -39,10 +34,15 @@ class AfficheurConnexion extends Afficheur
             $mail = filter_var($_POST['mail'], FILTER_VALIDATE_EMAIL);
             $mail = filter_var($mail, FILTER_SANITIZE_EMAIL);
             $passwrd = filter_var($_POST['pw']);
-            Authentification::authenticate($mail, $passwrd);
-            Authentification::loadProfile($mail);
             $html = "";
-            header("location:?action=accueil-utilisateur");
+            try {
+                Authentification::authenticate($mail, $passwrd);
+                Authentification::loadProfile($mail);
+                header("location:?action=accueil-utilisateur");
+            } catch (BadPasswordException $e) {
+                header("location:");
+            }
+
         }
         return $html;
     }
