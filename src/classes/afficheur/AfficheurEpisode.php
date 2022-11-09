@@ -39,7 +39,7 @@ class AfficheurEpisode extends Afficheur
         $html.="<source src=videos/";
         //Ici le fichier de l'episode
         $html.=$episode->file;
-        $html.="type=\"video/mp4\">";
+        $html.=" type=\"video/mp4\">";
         $html.="</video>";
 
         //Titre
