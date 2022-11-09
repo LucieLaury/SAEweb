@@ -1,6 +1,7 @@
 <?php
 
 namespace iutnc\netVOD\dispatcher;
+use iutnc\netVOD\afficheur\AccueilUser;
 use iutnc\netVOD\afficheur\AfficheurCatalogue;
 use iutnc\netVOD\afficheur\AfficheurCommentaires;
 use iutnc\netVOD\afficheur\AfficheurConnexion;
@@ -44,7 +45,7 @@ class Dispatcher
                 break;
                 //cas de la connexion d'un utilisateur
             case "accueil-utilisateur":
-                $act = new AfficheurUtilisateur();
+                $act = new AccueilUser();
                 break;
             case "register":
                 $act = new AfficheurRegistrer();
@@ -88,7 +89,7 @@ class Dispatcher
             <a href="?register"><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">test2</button></a>
             </div>
             <div  class=""> 
-               <a href="?register"><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">Se déconnecter</button></a>
+               <a href=""><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">Se déconnecter</button></a>
             </div>
         </div>
         </header>
