@@ -57,25 +57,54 @@ class AfficheurSerie extends Afficheur
         $annee = $this->serie->annee;
         $date = $this->serie->date;
 
+
         $res="<div style='display: flex; flex-direction: row; margin-bottom: 50px;'>";
 
-        $res.="<img src='$img' width='25%'/>";
-        $res.="<div style='text-align: center; margin-left: 30px;'>
-                <div class='grid grid-cols-3 '>
-                <p class='col-start-2'><strong>$titre</strong></p>
-                 <button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-red-500 hover:to-yellow-500'>j'aime</button>
-                
-                </div>
-                <p>genre : </p>
-                <p>public visé : </p>
-                <p>descriptif : $desc</p>
-                <p>année de sortie : $annee</p>
-                <p>date d'ajout : $date</p>
-            </div>";
+                $res.="<img src='$img' class='min-w-m'  width='33%'/>";
+                $res.="<div class='max-w-2xl' style='text-align: center; margin-left: 30px;'>
+                            <div class='grid grid-cols-3 '>
+                                <p class='col-start-2'><strong>$titre</strong></p>
+                                <button>";
+                                $res.= $this->fav();
+                                $res.="</button>
+                            
+                             </div>
+                            <p>genre : </p>
+                            <p>public visé : </p>
+                            <p >descriptif : $desc</p>
+                            <p>année de sortie : $annee</p>
+                            <p>date d'ajout : $date</p>
+                      </div>";
 
-        $res.= $this->noteEtComms();
+                $res.= $this->noteEtComms();
         $res.="</div>";
         return $res;
+    }
+
+    public function fav():string{
+        $db = ConnectionFactory::makeConnection();
+        $id = $this->serie->id;
+
+        $user = $_SESSION['user'];
+        $user = unserialize($user);
+
+        $mail = $user->email;
+
+
+
+        $req = $db->prepare("SELECT videoPref from feedback
+             where idS= :id and email= :mail;");
+        $req->bindParam(":id", $id);
+        $req->bindParam(":mail", $mail);
+        $req->execute();
+        $row = $req->fetch();
+        $pref =false;
+        if($row != null)$pref = $row['videoPref'];
+        if($pref == false)return "<img src='src/Styles/img/starBorder.png' width='20%'>";
+        else return "<img src='src/Styles/img/star.png' width='20%'>";
+
+
+
     }
 
 

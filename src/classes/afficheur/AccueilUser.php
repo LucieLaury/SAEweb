@@ -24,7 +24,8 @@ class AccueilUser extends Afficheur
         }
         else
             if ($this->http_method == "POST") {
-                return "";
+                $res="";
+                return $res;
             }
             return "";
         }

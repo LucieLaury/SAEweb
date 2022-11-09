@@ -84,11 +84,11 @@ class User
             if( ($req->fetch())!=null){
                 $db->execute("insert into feedback(idS, email, videoPref) values ( $this->email, $idserie, true);");
             }else{
-                $db->execute("UPDATE feedback SET videoPref = true WHERE idS = $idserie;");
+                $db->execute("UPDATE feedback SET videoPref = true WHERE idS = $idserie and email=$this->email ;");
             }
         }else{
             $this->favoris[] = $serie;
-            $db->prepare("UPDATE feedback SET videoPref = false WHERE idS = $idserie;");
+            $db->prepare("UPDATE feedback SET videoPref = false WHERE idS = $idserie and email = $this->email;");
 
         }
 

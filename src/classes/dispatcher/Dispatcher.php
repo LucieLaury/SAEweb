@@ -79,14 +79,14 @@ class Dispatcher
         <body class="">
         <header class=" text-gray-300 bg-gray-800 flex flex-row justify-between py-8 shadow-2xl mb-4 "  ">
         <div class="  mx-8 ">
-            <a href="?Acceuil-utilisateur"><img src="src/Styles/img/Petitlogo.png" width="10%"></a>
+            <a href="?action=accueil-utilisateur"><img src="src/Styles/img/Petitlogo.png" width="10%"></a>
         </div>
         <div class="flex flex-row mx-8 ">
             <div class="justify-start mx-8 "> 
-            <a href="?register"><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">test</button></a>
+            <a href="?action=register"><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">test</button></a>
 
-            <a href="?register"><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">test1</button></a>
-            <a href="?register"><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">test2</button></a>
+            <a href="?action=register"><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">test1</button></a>
+            <a href="?action=register"><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">test2</button></a>
             </div>
             <div  class=""> 
                <a href=""><button class="rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full ">Se déconnecter</button></a>
