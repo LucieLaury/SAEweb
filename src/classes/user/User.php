@@ -55,7 +55,7 @@ class User
         return $tab;
     }
 
-    public function updateListeType(int $type, int $idSerie): void{
+    public function updateListeType(int|string $type, int $idSerie, bool $val): void{
         $query = "";
         switch ($type) {
             case 1: // FAVORIS
@@ -84,18 +84,19 @@ class User
                 $secondQuery="";
                 switch ($type) {
                     case 1: // FAVORIS
-                        $secondQuery = "update feedback set videoPref=true where email = ? and idS =?";
+                        $secondQuery = "update feedback set videoPref=? where email = ? and idS =?";
                         break;
                     case 2: // EN COURS
-                        $secondQuery = "update feedback set enCours=true where email = ? and idS =?";
+                        $secondQuery = "update feedback set enCours=? where email = ? and idS =?";
                         break;
                     case 3: // VISIONNEE
-                        $secondQuery = "update feedback set videoVisionnee=true where email = ? and idS =?";
+                        $secondQuery = "update feedback set videoVisionnee=? where email = ? and idS =?";
                         break;
                 }
                 $resultat = $bd->prepare($secondQuery);
-                $resultat->bindParam(1, $this->email);
-                $resultat->bindParam(2, $idSerie);
+                $resultat->bindParam(1, $val);
+                $resultat->bindParam(2, $this->email);
+                $resultat->bindParam(3, $idSerie);
                 $resultat->execute();
             }
             //ligne existante : on ignore
@@ -105,18 +106,19 @@ class User
             $secondQuery="";
             switch ($type) {
                 case 1: // FAVORIS
-                    $secondQuery = "insert into feedback (idS,email,videoPref) values (?,?,true)";
+                    $secondQuery = "insert into feedback (idS,email,videoPref) values (?,?,?)";
                     break;
                 case 2: // EN COURS
-                    $secondQuery = "insert into feedback (idS,email,enCours) values (?,?,true)";
+                    $secondQuery = "insert into feedback (idS,email,enCours) values (?,?,?)";
                     break;
                 case 3: // VISIONNEE
-                    $secondQuery = "insert into feedback (idS,email,videoVisionnee) values (?,?,true)";
+                    $secondQuery = "insert into feedback (idS,email,videoVisionnee) values (?,?,?)";
                     break;
             }
             $resultat = $bd->prepare($secondQuery);
             $resultat->bindParam(1, $idSerie);
             $resultat->bindParam(2, $this->email);
+            $resultat->bindParam(3, $val);
             $resultat->execute();
         }
     }
@@ -157,7 +159,7 @@ class User
         }
         //si la serie n'est pas trouvee
         if(!$trouveSerie){
-            $this->updateListeType(2,$idSerie);
+            $this->updateListeType(2,$idSerie,true);
         }
     }
 
