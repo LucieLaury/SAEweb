@@ -25,8 +25,15 @@ class AfficheurCommentaires extends Afficheur
         $user = $_SESSION['user'];
         $user = unserialize($user);
         $mail = $user->__get('email');
+        $id = $_GET['id'];
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            if (isset($_POST['valEdit'])) {
+            $query = AfficheurCommentaires::$bd->prepare("select idSerie from feedback where idserie = ? and mail = ?");
+            $query->bindParam(1,$id);
+            $query->bindParam(2,$mail);
+            $query->execute();
+            if($data = $query->fetch(PDO::FETCH_ASSOC)) $lineExist = true;
+            else $lineExist = false;
+            if ($_POST['valEdit'] && ($lineExist && isset($_POST['add'])) !== null) {
                 $query = AfficheurCommentaires::$bd->prepare("update Feedback set txtComm = ? where mail = ? and idSerie = ?");
                 $comm = filter_var($_POST['comm'], FILTER_SANITIZE_STRING);
                 $comm = nl2br($comm);
@@ -36,16 +43,18 @@ class AfficheurCommentaires extends Afficheur
                 $query->execute();
                 $this->edit = false;
             } else if (isset($_POST['rmv'])) {
-                $query = AfficheurCommentaires::$bd->prepare("delete from Feedback where mail = ? and idSerie = ?");
+                if(!$lineExist) $query = AfficheurCommentaires::$bd->prepare("delete from Feedback where mail = ? and idSerie = ?");
+                else $query = AfficheurCommentaires::$bd->prepare("update feedback set txtComm = null where mail = ? and idSerie = ?");
                 $query->bindparam(1, $mail);
                 $query->bindparam(2, $_GET['id']);
                 $query->execute();
             } elseif (isset($_POST['add'])) {
-                $query = AfficheurCommentaires::$bd->prepare("insert into Feedback (mail,txtComm,idSerie) values (?,?,?)");
+                if(!$lineExist) $query = AfficheurCommentaires::$bd->prepare("insert into Feedback (txtComm,mail,idSerie) values (?,?,?)");
+                else $query = AfficheurCommentaires::$bd->prepare("update Feedback set txtComm = ? where mail = ? and idSerie = ?");
                 $comm = filter_var($_POST['comm'], FILTER_SANITIZE_STRING);
                 $comm = nl2br($comm);
-                $query->bindparam(1, $mail);
-                $query->bindparam(2, $comm);
+                $query->bindparam(1, $comm);
+                $query->bindparam(2, $mail);
                 $query->bindparam(3, $_GET['id']);
                 $query->execute();
             } else $this->edit = true;
@@ -76,7 +85,6 @@ class AfficheurCommentaires extends Afficheur
             $res .= $data['txtComm'] . "</br>";
             $res .= "</br></br>";
         }
-        $id = $_GET['id'];
         if (!$alreadyCommented) {
             //si l'utilisateur n'as pas encore commenter cette serie, on place un champ prevu a cet effet
             $res .= "<form method=post>"

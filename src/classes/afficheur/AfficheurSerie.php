@@ -46,9 +46,6 @@ class AfficheurSerie extends Afficheur
             $re = new RenderEpisode($episodeC);
             $res .= $re->render();
         }
-
-
-        $res.=$this->noteEtComms();
         return $res;
     }
 
@@ -91,15 +88,15 @@ class AfficheurSerie extends Afficheur
         $id = $_GET['id'];
         if ($_SERVER['REQUEST_METHOD'] === "POST"){
             if(isset($_POST['Bnote'])){
-                $query = $this->db->prepare("select txtComm from feedback where idserie = ? and mail = ?");
+                $query = $this->db->prepare("select idSerie from feedback where idserie = ? and mail = ?");
                 $query->bindParam(1,$id);
                 $query->bindParam(2,$mail);
                 $query->execute();
-                if($data = $query->fetch(\PDO::FETCH_ASSOC))$query = $this->db->query("update feedback set note = ? where idserie = ? and mail = ?;");
-                else $query = $this->db->query("insert into feedback (mail,txtComm,idSerie) values (?,?,?);");
-                $query->bindParam(1,$mail);
-                $query->bindParam(2,$_POST['note']);
-                $query->bindParam(3,$id);
+                if($data = $query->fetch(\PDO::FETCH_ASSOC))$query = $this->db->prepare("update feedback set note = ? where idserie = ? and mail = ?;");
+                else $query = $this->db->prepare("insert into feedback (note,idSerie,mail) values (?,?,?);");
+                $query->bindParam(1,$_POST['note']);
+                $query->bindParam(2,$id);
+                $query->bindParam(3,$mail);
                 $query->execute();
             }
         }
@@ -110,10 +107,12 @@ class AfficheurSerie extends Afficheur
         $div = 0;
         $alreadyNoted = false;
         while ($data = $query->fetch(\PDO::FETCH_ASSOC)){
-            $tot += $data['note'];
-            $div++;
-            if ($data['mail']== $mail){
-                $alreadyNoted = true;
+            if ($data['note'] != null) {
+                $tot += $data['note'];
+                $div++;
+                if ($data['mail'] == $mail) {
+                    $alreadyNoted = true;
+                }
             }
         }
         if($div!=0){
