@@ -16,16 +16,18 @@ class Episode{
     private string $resume;
     private int $duree;
     private string $file;
+    private int $idSerie;
 
 
     //CONST
-    public function __construct(int $id, int $num, string $ti, string $resu, int $dur, string $fi){
+    public function __construct(int $id, int $num, string $ti, string $resu, int $dur, string $fi, int $idSerie){
         $this->id = $id;
         $this->numero = $num;
         $this->titre = $ti;
         $this->resume = $resu;
         $this->duree = $dur;
         $this->file = $fi;
+        $this->idSerie = $idSerie;
     }
 
     public function __get(string $attribut):mixed {
@@ -54,7 +56,8 @@ class Episode{
                 $resum = $row['resume'];
                 $dur = $row['duree'];
                 $fil = $row['file'];
-                $episode = new Episode($id, $num, $ti, $resum, $dur, $fil);
+                $idS = $row['serie_id'];
+                $episode = new Episode($id, $num, $ti, $resum, $dur, $fil,$idS);
                 $creer = true;
             }
         }

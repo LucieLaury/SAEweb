@@ -16,6 +16,8 @@ class AfficheurEpisode extends Afficheur
         $id = (int) $_GET['id'];
         $episode = Episode::find($id);
 
+        $idS=$episode->idSerie;
+
         //Update de la liste en cours
         session_start();
         $user = $_SESSION['user'];
@@ -24,8 +26,13 @@ class AfficheurEpisode extends Afficheur
         $user = serialize($user);
         $_SESSION['user'] = $user;
 
+        //---Génération de l'HTML---//
+
         //Video
         $html = "";
+
+        $html .= "<div class='max-w-2xl' style='text-align: left; margin-left: 30px;'>";
+
         $html.="<video controls>";
         $html.="<source src=videos/";
         //Ici le fichier de l'episode
@@ -33,12 +40,19 @@ class AfficheurEpisode extends Afficheur
         $html.="type=\"video/mp4\">";
         $html.="</video>";
 
-        //Titre, resume, duree
+        //Titre
         $html.="<strong>".$episode->titre."</strong>";
 
-        $html.="<p>".$episode->resume."</p><br>";
+        //Episode
+        $html.="<p>"."Description : <br>".$episode->resume."</p><br>";
 
-        $html.="<p>".$episode->duree."</p><br>";
+        //Durée
+        $html.="<p>"."Durée : ".$episode->duree." minutes"."</p><br>";
+
+        //Bouton de retour à la série
+        $html.="<a href=\"?action=afficher-serie&id=$idS\"><button  class=\"mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-red-500 hover:to-yellow-500\">Retour à la série</button></a>";
+
+        $html.="</div>";
 
         return $html;
     }
