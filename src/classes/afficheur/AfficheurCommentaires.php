@@ -32,13 +32,13 @@ class AfficheurCommentaires extends Afficheur
                 $comm = nl2br($comm);
                 $query->bindparam(1, $comm);
                 $query->bindparam(2, $mail);
-                $query->bindparam(3, $_GET['idSerie']);
+                $query->bindparam(3, $_GET['id']);
                 $query->execute();
                 $this->edit = false;
             } else if (isset($_POST['rmv'])) {
                 $query = AfficheurCommentaires::$bd->prepare("delete from Feedback where mail = ? and idSerie = ?");
                 $query->bindparam(1, $mail);
-                $query->bindparam(2, $_GET['idSerie']);
+                $query->bindparam(2, $_GET['id']);
                 $query->execute();
             } elseif (isset($_POST['add'])) {
                 $query = AfficheurCommentaires::$bd->prepare("insert into Feedback (mail,txtComm,idSerie) values (?,?,?)");
@@ -46,12 +46,12 @@ class AfficheurCommentaires extends Afficheur
                 $comm = nl2br($comm);
                 $query->bindparam(1, $mail);
                 $query->bindparam(2, $comm);
-                $query->bindparam(3, $_GET['idSerie']);
+                $query->bindparam(3, $_GET['id']);
                 $query->execute();
             } else $this->edit = true;
         }
-        $query = AfficheurCommentaires::$bd->prepare("select mail,txtComm from Feedback where idSerie = ?");
-        $query->bindParam(1, $_GET['idSerie']);
+        $query = AfficheurCommentaires::$bd->prepare("select mail,txtComm from Feedback where idserie = ?");
+        $query->bindParam(1, $_GET['id']);
         $query->execute();
         $alreadyCommented = false;
         $res = "Commentaires de votre serie :</br>";
@@ -76,15 +76,15 @@ class AfficheurCommentaires extends Afficheur
             $res .= $data['txtComm'] . "</br>";
             $res .= "</br></br>";
         }
-        $id = $_GET['idSerie'];
+        $id = $_GET['id'];
         if (!$alreadyCommented) {
             //si l'utilisateur n'as pas encore commenter cette serie, on place un champ prevu a cet effet
             $res .= "<form method=post>"
                 . "<textarea type=text name=comm placeholder='votre commentaire' style='min-height: 100px;min-width: 400px;max-height: 100px;max-width: 400px;'></textarea>"
-                . "</br><button type=submit name='add'>commenter></button>"
+                . "</br><button type=submit name='add'>commenter</button>"
                 . "</form>";
         }
-        $res .= "<button href=?action=afficher-episode?idSerie=$id >retour à la serie</button>";
+        $res .= "<a href=?action=afficher-serie&id=$id>retour à la serie</a>";
         return $res;
     }
 }

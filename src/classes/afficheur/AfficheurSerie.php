@@ -22,11 +22,11 @@ class AfficheurSerie extends Afficheur
         parent::__construct();
         $this->db = ConnectionFactory::makeConnection();
         $id = $_GET['id'];
-        $titre = $this->getTitre($id, $this->db);
+        $titre = $this->getTitre((int) $id);
         $this->serie = Serie::find($titre);
     }
 
-    public function getTitre(int $id, \PDO $bd): string{
+    public function getTitre(int $id): string{
 
         $req = $this->db->prepare("SELECT titre from serie where id = :id");
         $req->bindParam(":id", $id);
@@ -48,6 +48,7 @@ class AfficheurSerie extends Afficheur
         }
 
 
+        $res.=$this->noteEtComms();
         return $res;
     }
 
@@ -74,7 +75,7 @@ class AfficheurSerie extends Afficheur
                 <p>date d'ajout : $date</p>
             </div>";
 
-
+        $res.= $this->noteEtComms();
         $res.="</div>";
         return $res;
     }
@@ -82,5 +83,52 @@ class AfficheurSerie extends Afficheur
 
 
     ////partie Nathanael:
-
+    private function noteEtComms(): string{
+        $res = "<div style='display: flex; flex-direction: column; margin-left: 50px;margin-right: 50px'>";
+        $user = $_SESSION['user'];
+        $user = unserialize($user);
+        $mail = $user->__get('email');
+        $id = $_GET['id'];
+        if ($_SERVER['REQUEST_METHOD'] === "POST"){
+            if(isset($_POST['Bnote'])){
+                $query = $this->db->prepare("select txtComm from feedback where idserie = ? and mail = ?");
+                $query->bindParam(1,$id);
+                $query->bindParam(2,$mail);
+                $query->execute();
+                if($data = $query->fetch(\PDO::FETCH_ASSOC))$query = $this->db->query("update feedback set note = ? where idserie = ? and mail = ?;");
+                else $query = $this->db->query("insert into feedback (mail,txtComm,idSerie) values (?,?,?);");
+                $query->bindParam(1,$mail);
+                $query->bindParam(2,$_POST['note']);
+                $query->bindParam(3,$id);
+                $query->execute();
+            }
+        }
+        $query = $this->db->prepare("select note, mail from feedback where idserie = ?");
+        $query ->bindParam(1,$id);
+        $query->execute();
+        $tot = 0;
+        $div = 0;
+        $alreadyNoted = false;
+        while ($data = $query->fetch(\PDO::FETCH_ASSOC)){
+            $tot += $data['note'];
+            $div++;
+            if ($data['mail']== $mail){
+                $alreadyNoted = true;
+            }
+        }
+        if($div!=0){
+            $note = $tot / $div;
+            $res .= "note moyenne de la serie : $note</br></br>";
+        }
+        else {
+            $res .= "cette serie n'as encore jamais été notées, soyez le premier !";
+        }
+        if(!$alreadyNoted){
+            $res.= "<form method='post'>".
+                    "<input type='number' name='note' placeholder='note /5' max='5'>".
+                    "<button name='Bnote' type='submit'>noter</button></form>";
+        }
+        $res .= "<a href=?action=afficher-commentaires&id=$id>acceder aux commentaires</a></div>";
+        return $res;
+    }
 }
