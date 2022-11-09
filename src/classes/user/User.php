@@ -67,6 +67,33 @@ class User
         }
     }
 
+    public function LikeOuPas(int $idserie){
+        $db = ConnectionFactory::makeConnection();
+        $serie = Serie::find($idserie);
+        if(in_array($serie, $this->favoris)){
+            foreach ($this->favoris as $cle=>$value ){
+                if($value===$serie){
+                    unset($this->favoris[$cle]);
+                }
+            }
+            $req = $db->prepare("SELECT idS from feedback
+             where idS= :id and email= :mail;");
+            $req->bindParam(":id", $idserie);
+            $req->bindParam(":mail", $this->email);
+            $req->execute();
+            if( ($req->fetch())!=null){
+                $db->execute("insert into feedback(idS, email, videoPref) values ( $this->email, $idserie, true);");
+            }else{
+                $db->execute("UPDATE feedback SET videoPref = true WHERE idS = $idserie;");
+            }
+        }else{
+            $this->favoris[] = $serie;
+            $db->prepare("UPDATE feedback SET videoPref = false WHERE idS = $idserie;");
+
+        }
+
+    }
+
 
 
 
