@@ -38,6 +38,7 @@ class AfficheurSerie extends Afficheur
 
     public function execute(): string
     {
+        session_start();
         $res="";
         $res.=$this->affichageSerie();
         $episodes = $this->serie->__get('episodes');

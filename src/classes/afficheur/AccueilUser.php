@@ -2,12 +2,15 @@
 
 namespace iutnc\netVOD\afficheur;
 use iutnc\netVOD\render as render;
+use MongoDB\Driver\Session;
 
 class AccueilUser extends Afficheur
 {
 
     public function execute(): string
     {
+        session_start();
+
         if ($this->http_method == "GET") {
             $res = "";
             $user = $_SESSION['user'];
