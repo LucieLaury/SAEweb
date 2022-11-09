@@ -47,7 +47,17 @@ class AfficheurCatalogue extends Afficheur
     }
 
     public function affichageFormulaire() : string {
-        $html = "<div style='width = 100%; text-align: center; margin-bottom: 40px'>";
+        $options = array("titre","récent","nombre d'épisodes","meilleurs notes");
+        $html = "<div style='width = 100%; text-align: center; margin-bottom: 40px'>".
+            "<form method='post'>".
+            "<select name='methode de tri'>".
+            "<option value='none' selected hidden> trier par </option>";
+        foreach ($options as $op) {
+            $html .= "<option value=$op> $op </option>";
+        }
+        $html.=
+            "</select></form></div>";
+        /*$html = "<div style='width = 100%; text-align: center; margin-bottom: 40px'>";
         $html .= "<form method='post' action='?action=afficher-catalogue'>";
         $html .= "<input type='search' name='rech' placeholder='rechercher un film' style='width: 50%; margin-right: 10px'/>";
         $html .= "<input type='submit' name='submit' value='Envoyer' /><br>";
@@ -55,8 +65,7 @@ class AfficheurCatalogue extends Afficheur
         $html .= "<input type='radio' name='trie' value='date'/> <label style='margin-right:40px'>Date</label>";
         $html .= "<input type='radio' name='trie' value='nbEpisodes'/><label style='margin-right:40px'>nombre d'Episode</label>";
         $html .= "</form>";
-        $html .= "</div>";
-
+        $html .= "</div>";*/
 
         return $html;
     }
