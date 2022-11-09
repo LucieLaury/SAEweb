@@ -89,19 +89,19 @@ class AfficheurSerie extends Afficheur
         $id = $_GET['id'];
         if ($_SERVER['REQUEST_METHOD'] === "POST"){
             if(isset($_POST['Bnote'])){
-                $query = $this->db->prepare("select idSerie from feedback where idserie = ? and mail = ?");
+                $query = $this->db->prepare("select idS from feedback where idS = ? and email = ?");
                 $query->bindParam(1,$id);
                 $query->bindParam(2,$mail);
                 $query->execute();
-                if($data = $query->fetch(\PDO::FETCH_ASSOC))$query = $this->db->prepare("update feedback set note = ? where idserie = ? and mail = ?;");
-                else $query = $this->db->prepare("insert into feedback (note,idSerie,mail) values (?,?,?);");
+                if($data = $query->fetch(\PDO::FETCH_ASSOC))$query = $this->db->prepare("update feedback set note = ? where idS = ? and email = ?;");
+                else $query = $this->db->prepare("insert into feedback (note,idS,email) values (?,?,?);");
                 $query->bindParam(1,$_POST['note']);
                 $query->bindParam(2,$id);
                 $query->bindParam(3,$mail);
                 $query->execute();
             }
         }
-        $query = $this->db->prepare("select note, mail from feedback where idserie = ?");
+        $query = $this->db->prepare("select note, email from feedback where idS = ?");
         $query ->bindParam(1,$id);
         $query->execute();
         $tot = 0;
@@ -111,7 +111,7 @@ class AfficheurSerie extends Afficheur
             if ($data['note'] != null) {
                 $tot += $data['note'];
                 $div++;
-                if ($data['mail'] == $mail) {
+                if ($data['email'] == $mail) {
                     $alreadyNoted = true;
                 }
             }
