@@ -30,7 +30,7 @@ class User
         $this->noCarte = $noCarte;
     }
 
-    private function listeType(int $type): array {
+    public function listeType(int $type): array {
         $tab = [];
         $query = "";
         switch ($type) {
