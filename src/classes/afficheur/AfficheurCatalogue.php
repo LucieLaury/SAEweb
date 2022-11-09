@@ -47,20 +47,21 @@ class AfficheurCatalogue extends Afficheur
     }
 
     public function affichageFormulaire() : string {
+        $html = "<div style='width = 100%; text-align: center; margin-bottom: 40px'>";
+        $html .= "<form method='post' action='?action=afficher-catalogue'>";
+        $html .= "<input type='search' name='rech' placeholder='rechercher un film' style='width: 50%; margin-right: 10px'/>".
+            "<input type='submit' name='submit' value='Envoyer' />";
+        ;
         $options = array("titre","récent","nombre d'épisodes","meilleures notes");
         $value = array("titre", "date", "nbEpisodes", "note");
-        $html = "<div style='width = 100%; text-align: center; margin-bottom: 40px'>".
-            "<form method='post'>".
-            "<select name='methode de tri'>".
+        $html .= "<form method='post'>".
+            "<select name='tri' style='justify-self: left'>".
             "<option value='none' selected hidden> trier par </option>";
         foreach (array_keys($options) as $key) {
             $html .= "<option value=$value[$key]> $options[$key]</option>";
         }
-        $html.=
-            "</select></form></div>";
-        /*$html = "<div style='width = 100%; text-align: center; margin-bottom: 40px'>";
-        $html .= "<form method='post' action='?action=afficher-catalogue'>";
-        $html .= "<input type='search' name='rech' placeholder='rechercher un film' style='width: 50%; margin-right: 10px'/>";
+        $html.="</select></form></div>";
+        /*
         $html .= "<input type='submit' name='submit' value='Envoyer' /><br>";
         $html .= "<label>Trie par : </label> <input type='radio' name='trie' value='titre'/><label style='margin-right:40px'>titre</label>";
         $html .= "<input type='radio' name='trie' value='date'/> <label style='margin-right:40px'>Date</label>";
@@ -73,7 +74,7 @@ class AfficheurCatalogue extends Afficheur
 
 
     public function afficherRecherche():string{
-        print $_POST['trie'];
+        print $_POST['tri'];
         $res = $this->affichageFormulaire();
         $res .= "<div style='display: flex;justify-content: space-around; flex-direction: row; flex-wrap: wrap'>";
         //séparation des mots de la methode post
