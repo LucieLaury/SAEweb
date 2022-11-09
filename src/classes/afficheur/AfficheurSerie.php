@@ -16,6 +16,7 @@ class AfficheurSerie extends Afficheur
 
     private Serie $serie;
     private \PDO $db;
+    private $updatingNote;
 
     public function __construct()
     {
@@ -24,6 +25,7 @@ class AfficheurSerie extends Afficheur
         $id = $_GET['id'];
         $titre = $this->getTitre((int) $id);
         $this->serie = Serie::find($titre);
+        $this->updatingNote = false;
     }
 
     public function getTitre(int $id): string{
@@ -128,6 +130,16 @@ class AfficheurSerie extends Afficheur
                 $query->bindParam(2,$id);
                 $query->bindParam(3,$mail);
                 $query->execute();
+                $this->updatingNote = false;
+            }
+            elseif (isset($_POST['BUpdateNote'])){
+                $this->updatingNote = true;
+            }
+            elseif (isset($_POST['BDeleteNote'])){
+                $query = $this->db->prepare("update feedback set note = null where idS = ? and email = ?;");
+                $query->bindParam(1,$id);
+                $query->bindParam(2,$mail);
+                $query->execute();
             }
         }
         $query = $this->db->prepare("select note, email from feedback where idS = ?");
@@ -147,17 +159,22 @@ class AfficheurSerie extends Afficheur
         }
         if($div!=0){
             $note = $tot / $div;
-            $res .= "note moyenne de la serie : $note</br></br>";
+            $res .= "note moyenne de la serie : $note";
         }
         else {
             $res .= "cette serie n'as encore jamais été notées, soyez le premier !";
         }
-        if(!$alreadyNoted){
+        if(!$alreadyNoted || $this->updatingNote){
             $res.= "<form method='post'>".
                     "<input type='number' name='note' placeholder='note /5' max='5'>".
-                    "<button name='Bnote' type='submit'>noter</button></form>";
+                    "<button name='Bnote' type='submit'>noter</button>";
         }
-        $res .= "<a href=?action=afficher-commentaires&id=$id>acceder aux commentaires</a></div>";
+        else{
+            $res.= "<form method='post'>".
+                "<button name='BUpdateNote' type='submit'>changer ma note</button></br>"
+                ."<button name='BDeleteNote' type='submit'>supprimer ma note</button>";
+        }
+        $res .= "</form><a href=?action=afficher-commentaires&id=$id style='margin-top: 30px'>acceder aux commentaires</a></div>";
         return $res;
     }
 }

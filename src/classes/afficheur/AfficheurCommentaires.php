@@ -28,12 +28,12 @@ class AfficheurCommentaires extends Afficheur
         $id = $_GET['id'];
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $query = AfficheurCommentaires::$bd->prepare("select ids from feedback where idS = ? and email = ?");
-            $query->bindParam(1,$id);
-            $query->bindParam(2,$mail);
+            $query->bindParam(1, $id);
+            $query->bindParam(2, $mail);
             $query->execute();
-            if($data = $query->fetch(PDO::FETCH_ASSOC)) $lineExist = true;
+            if ($data = $query->fetch(PDO::FETCH_ASSOC)) $lineExist = true;
             else $lineExist = false;
-            if (isset($_POST['valEdit']) || ($lineExist && isset($_POST['add']))){
+            if (isset($_POST['valEdit']) || ($lineExist && isset($_POST['add']))) {
                 $query = AfficheurCommentaires::$bd->prepare("update feedback set commentaire = ? where email = ? and idS = ?");
                 $comm = filter_var($_POST['comm'], FILTER_SANITIZE_STRING);
                 $comm = nl2br($comm);
@@ -43,13 +43,13 @@ class AfficheurCommentaires extends Afficheur
                 $query->execute();
                 $this->edit = false;
             } else if (isset($_POST['rmv'])) {
-                if(!$lineExist) $query = AfficheurCommentaires::$bd->prepare("delete from feedback where email = ? and idS = ?");
+                if (!$lineExist) $query = AfficheurCommentaires::$bd->prepare("delete from feedback where email = ? and idS = ?");
                 else $query = AfficheurCommentaires::$bd->prepare("update feedback set commentaire = null where email = ? and idS = ?");
                 $query->bindparam(1, $mail);
                 $query->bindparam(2, $_GET['id']);
                 $query->execute();
             } elseif (isset($_POST['add'])) {
-                if(!$lineExist) $query = AfficheurCommentaires::$bd->prepare("insert into feedback (commentaire,email,idS) values (?,?,?)");
+                if (!$lineExist) $query = AfficheurCommentaires::$bd->prepare("insert into feedback (commentaire,email,idS) values (?,?,?)");
                 else $query = AfficheurCommentaires::$bd->prepare("update feedback set commentaire = ? where email = ? and idS = ?");
                 $comm = filter_var($_POST['comm'], FILTER_SANITIZE_STRING);
                 $comm = nl2br($comm);
@@ -66,21 +66,23 @@ class AfficheurCommentaires extends Afficheur
         $res = "Commentaires de votre serie :</br>";
         while ($data = $query->fetch(PDO::FETCH_ASSOC)) {
             //parcours de tous les commentaires de la serie
-            $res .= $data["email"] . "</br>";
-            if ($mail == $data["email"]) {
+            if ($data['commentaire'] != null) {
+                $res .= $data["email"] . "</br>";
+                if ($mail == $data["email"]) {
+                    $alreadyCommented = true;
+                    if ($this->edit) {
+                        $res .= "<form method=post>"
+                            . "<button name='valEdit' type=submit>valider</button><br>"
+                            . "<textarea type=text name=comm placeholder='votre commentaire' style='min-height: 100px;min-width: 400px;max-height: 100px;max-width: 400px;'></textarea>"
+                            . "</form>";
+                    } else {
+                        $res .= "<form method=post>"
+                            . "<button name='edit' type=submit>modifier commentaire</button><button name='rmv' type='submit'>supprimer commentaire</button><br>"
+                            . "</form>";
+                    }
+                }
                 // on verifie si le commentaire courant a ete poste par l'utilisateur courant
                 // cela permet de lui donner l'option de modifier ou supprimer son commentaire ainsi que de l'empecher d'en poser un nouveau
-                $alreadyCommented = $data['commentaire']!= null;
-                if ($this->edit) {
-                    $res .= "<form method=post>"
-                        . "<button name='valEdit' type=submit>valider</button><br>"
-                        . "<textarea type=text name=comm placeholder='votre commentaire' style='min-height: 100px;min-width: 400px;max-height: 100px;max-width: 400px;'></textarea>"
-                        . "</form>";
-                } else {
-                    $res .= "<form method=post>"
-                        . "<button name='edit' type=submit>modifier commentaire</button><button name='rmv' type='submit'>supprimer commentaire</button><br>"
-                        . "</form>";
-                }
             } else $res .= "</br>";
             $res .= $data['commentaire'] . "</br>";
             $res .= "</br></br>";
