@@ -55,7 +55,7 @@ class User
         return $tab;
     }
 
-    public function updateListeType(int|string $type, int $idSerie, bool $val): void{
+    public function updateListeType(int $type, int $idSerie, bool $val): void{
         $query = "";
         switch ($type) {
             case 1: // FAVORIS
