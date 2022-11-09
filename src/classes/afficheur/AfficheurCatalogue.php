@@ -62,7 +62,7 @@ class AfficheurCatalogue extends Afficheur
 
     public function afficherRecherche():string{
 
-        $res = "";
+        $res = "<div style='display: flex; flex-direction: row; justify-content: space-around'>";
         //séparation des mots de la methode post
         $tab = explode(' ', $_POST['rech']);
         //tableau qui répertorie les titres des series qui vont etre affichees
@@ -75,6 +75,7 @@ class AfficheurCatalogue extends Afficheur
             $tab2 = $this->requeteRech($mot, "descriptif", $tab1[0]);
             $res .= $tab2[1];
         }
+        $res .="</div>";
         return $res;
     }
 
