@@ -42,7 +42,7 @@ class AfficheurConnexion extends Afficheur
             Authentification::authenticate($mail, $passwrd);
             Authentification::loadProfile($mail);
             $html = "";
-            header("location:?action=AccueilUser");
+            header("location:?action=accueil-utilisateur");
         }
         return $html;
     }

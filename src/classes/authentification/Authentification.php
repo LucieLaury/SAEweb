@@ -80,7 +80,7 @@ class Authentification
         $query->execute();
         $data = $query->fetch(PDO::FETCH_ASSOC);
         $hash = $data['pwd'];
-        if(!password_verify($passwd2check, $hash)) throw new BadPasswordException("Le mot de passe ou l'identifiant saisi est incorrecte");
+        if(!password_verify($passwd2check, $hash)) throw new BadPasswordException("Le mot de passe ou l'identifiant saisi est incorrect");
     }
 
 
