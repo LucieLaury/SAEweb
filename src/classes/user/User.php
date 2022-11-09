@@ -7,13 +7,15 @@ use iutnc\netVOD\exception\ProprieteInexistanteException;
 
 class User
 {
+    const FAVORIS = 1;
+    const ENCOURS = 2;
+    const VISIONNER = 3;
+
+
     private string $email;
     private string $nom;
     private string $prenom;
     private string $noCarte;
-    private array $favoris;
-    private array $enCours;
-
     /**
      * @param string $email
      * @param string $nom
@@ -26,8 +28,30 @@ class User
         $this->nom = $nom;
         $this->prenom = $prenom;
         $this->noCarte = $noCarte;
-        $this->favoris = [];
-        $this->enCours = [];
+    }
+
+    private function listeType(int $type): array {
+        $tab = [];
+        $query = "";
+        switch ($type) {
+            case 1: // FAVORIS
+                $query = "select idS from feedback where videoPref = true and email = ?;";
+                break;
+            case 2: // EN COURS
+                $query = "select idS from feedback where enCours = true and email = ?;";
+                break;
+            case 3: // VISIONNEE
+                $query = "select idS from feedback where videoVisionnee = true and email = ?;";
+                break;
+        }
+        $bd = ConnectionFactory::makeConnection();
+        $result = $bd->prepare($query);
+        $result->bindParam(1, $this->email);
+        $result->execute();
+        while($data = $result->fetch()) {
+            $tab[] = Serie::find((int) $data["idS"]);
+        }
+        return $tab;
     }
 
     /**
