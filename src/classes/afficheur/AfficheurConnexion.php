@@ -41,6 +41,8 @@ class AfficheurConnexion extends Afficheur
             $passwrd = filter_var($_POST['pw']);
             Authentification::authenticate($mail, $passwrd);
             Authentification::loadProfile($mail);
+            $html = "";
+            header("location:?action=AccueilUser");
         }
         return $html;
     }
