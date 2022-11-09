@@ -69,25 +69,24 @@ class User
     public function updateListeEnCours(Episode $e): void
     {
         $db = ConnectionFactory::makeConnection();
-        $titreEpisode = $e->titre;
-        $req = $db->prepare("SELECT serie_id,titre from serie 
-             INNER JOIN episode ON episode.serie_id = serie.id
-             where episode.titre=?;");
-        $req->bindParam("?", $titreEpisode);
+        $idEpisode = $e->id;
+        $req = $db->prepare("SELECT serie_id from episode 
+             where episode.id= :id ;");
+        $req->bindParam(":id", $idEpisode);
         $req->execute();
         $row = $req->fetch();
-        $idserie = $row['serie_id'];
-        $titreSerie = $row['titre'];
+        $idSerie = $row['serie_id'];
+
         $trouveSerie = false;
         //pour chaque serie dans la liste EnCours
         foreach ($this->enCours as $serieEnCours){
-            if($serieEnCours->id==$idserie){
+            if($serieEnCours->id==$idSerie){
                 $trouveSerie = true;
                 break;
             }
         }
         if(!$trouveSerie){
-            $enCours[]= Serie::find($titreSerie);
+            $enCours[]= Serie::find($idSerie);
         }
     }
 

@@ -47,10 +47,11 @@ class Dispatcher
             case "accueil-utilisateur":
                 $act = new AccueilUser();
                 break;
+                //cas du register
             case "register":
                 $act = new AfficheurRegistrer();
                 break;
-                //default : a voir s'il affiche une autre page de bienvenue un peu plus jolie
+                //default
             default :
                 $act = new AfficheurConnexion();
 

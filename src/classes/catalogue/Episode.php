@@ -34,9 +34,14 @@ class Episode{
     }
 
 
-    public static function find(string $titre): Episode{
+    public static function find(string|int $titre): Episode{
         $bd = ConnectionFactory::makeConnection();
-        $c1 = $bd->prepare("Select * from episode where titre= :ti ;");
+        if (is_int($titre)){
+            $c1 = $bd->prepare("Select * from episode where id= :ti ;");
+        }
+        else{
+            $c1 = $bd->prepare("Select * from episode where titre= :ti ;");
+        }
         $c1->bindParam(":ti",$titre);
         $c1->execute();
         $creer=false;
