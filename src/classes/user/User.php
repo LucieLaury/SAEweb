@@ -4,6 +4,7 @@ use iutnc\netVOD\catalogue\Serie;
 use iutnc\netVOD\catalogue\Episode as Episode;
 use iutnc\netVOD\db\ConnectionFactory;
 use iutnc\netVOD\exception\ProprieteInexistanteException;
+use PDO;
 
 class User
 {
@@ -54,6 +55,72 @@ class User
         return $tab;
     }
 
+    public function updateListeType(int $type, int $idSerie): void{
+        $query = "";
+        switch ($type) {
+            case 1: // FAVORIS
+                $query = "select idS, videoPref from feedback where email = ? and idS =?;";
+                break;
+            case 2: // EN COURS
+                $query = "select idS, enCours from feedback where email = ? and idS =?;";
+                break;
+            case 3: // VISIONNEE
+                $query = "select idS, videoVisionnee from feedback where email = ? and idS =?;";
+                break;
+        }
+        $bd = ConnectionFactory::makeConnection();
+        $result = $bd->prepare($query);
+        $result->bindParam(1, $this->email);
+        $result->bindParam(2, $idSerie);
+        $result->execute();
+        //vérifie si la ligne existe + récupère les données
+        $lineExist = false;
+        if($data = $result->fetch(PDO::FETCH_NUM)) $lineExist = true;
+
+        //si la ligne existe
+        if($lineExist){
+            //la ligne existe, la valeur n'est pas en true : update dans feedback
+            if($data[1]==1){
+                $secondQuery="";
+                switch ($type) {
+                    case 1: // FAVORIS
+                        $secondQuery = "update feedback set videoPref=true where email = ? and idS =?";
+                        break;
+                    case 2: // EN COURS
+                        $secondQuery = "update feedback set enCours=true where email = ? and idS =?";
+                        break;
+                    case 3: // VISIONNEE
+                        $secondQuery = "update feedback set videoVisionnee=true where email = ? and idS =?";
+                        break;
+                }
+                $resultat = $bd->prepare($secondQuery);
+                $resultat->bindParam(1, $this->email);
+                $resultat->bindParam(2, $idSerie);
+                $resultat->execute();
+            }
+            //ligne existante : on ignore
+        }
+        //la ligne n'existe pas : insertion d'une ligne dans feedback
+        else{
+            $secondQuery="";
+            switch ($type) {
+                case 1: // FAVORIS
+                    $secondQuery = "insert into feedback (idS,email,videoPref) values (?,?,true)";
+                    break;
+                case 2: // EN COURS
+                    $secondQuery = "insert into feedback (idS,email,enCours) values (?,?,true)";
+                    break;
+                case 3: // VISIONNEE
+                    $secondQuery = "insert into feedback (idS,email,videoVisionnee) values (?,?,true)";
+                    break;
+            }
+            $resultat = $bd->prepare($secondQuery);
+            $resultat->bindParam(1, $idSerie);
+            $resultat->bindParam(2, $this->email);
+            $resultat->execute();
+        }
+    }
+
     /**
      * @throws ProprieteInexistanteException
      */
@@ -77,16 +144,20 @@ class User
         $row = $req->fetch();
         $idSerie = $row['serie_id'];
 
+        //récupération de la liste en Cours
+        $listeEnCours = $this->listeType(2);
+
         $trouveSerie = false;
         //pour chaque serie dans la liste EnCours
-        foreach ($this->enCours as $serieEnCours){
+        foreach ($listeEnCours as $serieEnCours){
             if($serieEnCours->id==$idSerie){
                 $trouveSerie = true;
                 break;
             }
         }
+        //si la serie n'est pas trouvee
         if(!$trouveSerie){
-            $enCours[]= Serie::find($idSerie);
+            $this->updateListeType(2,$idSerie);
         }
     }
 
@@ -116,8 +187,6 @@ class User
         }
 
     }
-
-
 
 
 }
