@@ -18,8 +18,11 @@ class AfficheurRegistrer extends Afficheur
         $html = "";
         if($_SERVER['REQUEST_METHOD'] === "GET") {
             $html = <<<END
-                <div class='max-w-2xl' style='text-align: left; margin-left: 3%; padding: 1%'>
+            <section  class="flex flex-col justify-center mt-20 h-full my-auto" >
+               
                 <script src="javascript/register.js"></script>
+                
+                <div class="mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5">
                 <form action="" method="post">
                     <label>Identifiant</label>
                     <input type="email" name="email" style='margin-bottom: 1%' class="shadow rounded" placeholder="bernard@mail.com" required>
@@ -37,8 +40,10 @@ class AfficheurRegistrer extends Afficheur
                     <input id="secondPWD" type="password" style='padding: 1%' class="shadow rounded" name="confPwd" onchange="verifPWD()">
                     <button id="button" type="submit" class="mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400" disabled>S'enregistrer</button>
                 </form>
-                <a href="?action=default"><button class="mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400">Vous avez déjà un compte?</button></a>
                 </div>
+                <a href="?action=default"><button class="mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400">Vous avez déjà un compte?</button></a>
+            
+            </section>
             END;
         } else {
             $mail = $_POST['email'];

@@ -54,7 +54,7 @@ class AfficheurCatalogue extends Afficheur
         $html = "<div style='width = 100%; text-align: center; margin-bottom: 40px'>";
         $html .= "<form method='post' action='?action=afficher-catalogue'>";
         $html .= "<input type='search' name='rech' placeholder='rechercher un film' style='width: 50%; margin-right: 10px'/>".
-            "<input type='submit' name='submit' value='Envoyer' />";
+            "<input class=' text-gray-300 rounded-2xl p-1 px-3 mr-5 bg-gray-800' type='submit' name='submit' value='Envoyer' />";
         ;
         $options = array("titre","récent","nombre d'épisodes","meilleures notes");
         $value = array("titre", "date", "nbEpisodes", "note");
