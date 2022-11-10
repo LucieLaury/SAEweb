@@ -14,8 +14,9 @@ class AccueilUser extends Afficheur
 
         if ($this->http_method == "GET") {
             if(!(isset($_SESSION['user'])))header("location:?action=");
-
-            $res = "<label class=' mx-auto block shadow text-left pl-5 underline text-2xl bg-blue-500 rounded-2xl'>Mes Favoris</label>";
+            $res = "<a href='?action=Information'><button class='rounded-2xl hover:bg-gray-300 hover:text-gray-800 m-2 p-1 px-3 h-full '>Information</button></a>
+";
+            $res .= "<label class=' mx-auto block shadow text-left pl-5 underline text-2xl bg-blue-500 rounded-2xl'>Mes Favoris</label>";
             $res .= "<div class='flex flex-row'>";
             $user = $_SESSION['user'];
             $user = unserialize($user);
