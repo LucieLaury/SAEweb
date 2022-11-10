@@ -31,6 +31,10 @@ class User
         $this->noCarte = $noCarte;
     }
 
+    public function setMail(string $mail):void{
+        $this->email = $mail;
+    }
+
     /**
      * Fonction qui retourne la liste en fonction de son titre
      * @param int $type type de la liste
