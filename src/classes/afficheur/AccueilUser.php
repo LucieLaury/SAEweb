@@ -28,6 +28,22 @@ class AccueilUser extends Afficheur
 
             $res .= "<label class=' mx-auto block shadow text-left pl-5 underline text-2xl bg-blue-500 rounded-2xl'>En cours</label>";
 
+            $res .= "<div class='flex flex-row'>";
+            $listEnCours =  $user->listeType(User::ENCOURS);
+            foreach ($listEnCours as $value) {
+                $r = new RenderSerie($value);
+                $res .= $r->render();
+            }
+            $res.="</div>";
+
+            $res .= "<label class=' mx-auto block shadow text-left pl-5 underline text-2xl bg-blue-500 rounded-2xl'>Déjà visionnées</label>";
+            $res .= "<div class='flex flex-row'>";
+            $listVisio =  $user->listeType(User::VISIONNER);
+            foreach ($listVisio as $value) {
+                $r = new RenderSerie($value);
+                $res .= $r->render();
+            }
+            $res.="</div>";
             return $res;
         }
         else
