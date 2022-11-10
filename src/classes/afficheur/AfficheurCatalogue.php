@@ -60,7 +60,7 @@ class AfficheurCatalogue extends Afficheur
         $value = array("titre", "date", "nbEpisodes", "note");
         $html .= "<form method='post'>".
             "<select name='tri' style='justify-self: left'>".
-            "<option value='none' selected hidden> trier par </option>";
+            "<option value='titre' selected hidden> trier par </option>";
         foreach (array_keys($options) as $key) {
             $html .= "<option value=$value[$key]> $options[$key]</option>";
         }
