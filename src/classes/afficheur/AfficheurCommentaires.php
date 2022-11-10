@@ -64,29 +64,33 @@ class AfficheurCommentaires extends Afficheur
         $query->bindParam(1, $_GET['id']);
         $query->execute();
         $alreadyCommented = false;
-        $res = "<div class='justify-center mx-auto'> <label class='text-center font-bold block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5' >Commentaires de votre serie :</label>";
+        $res = "<section class='flex flex-col justify-center mt-20 h-full my-auto' ><div class='justify-center mx-auto'> <label class='justify-center shadow rounded mx-96 mt-8 py-1 px-8  content-center text-center font-bold' >Commentaires de votre serie :</label>";
         while ($data = $query->fetch(PDO::FETCH_ASSOC)) {
             //parcours de tous les commentaires de la serie
             if ($data['commentaire'] != null) {
+                $res.="<div class='justify-center shadow rounded mx-96 mt-5 content-center'><p class='text-center'>";
                 $res .= $data["email"];
+                $res .= "</p></div>";
+
                 if ($mail == $data["email"]) {
                     $alreadyCommented = true;
                     if ($this->edit) {
                         $res .= "<form method=post>"
-                            . "<button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400' name='valEdit' type=submit>valider</>"
-                            . "<textarea type=text name=comm placeholder='votre commentaire' style='min-height: 100px;min-width: 400px;max-height: 100px;max-width: 400px;'></textarea>"
-                            . "</form>";
+                            . "<div class='justify-center shadow rounded mx-96 mt-5 content-center'><button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400' name='valEdit' type=submit>valider</button>"
+                            . "<textarea class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5' type=text name=comm placeholder='votre commentaire' style='min-height: 100px;min-width: 400px;max-height: 100px;max-width: 400px;'></textarea>"
+                            . "</div></form>";
                     } else {
                         $res .= "<form method=post>"
-                            . "<button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400' name='edit' type=submit>modifier commentaire</><button name='rmv' type='submit'>supprimer commentaire</button>"
-                            . "</form>";
+                            . "<div class='justify-center mx-96 mt-5 content-center'><button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400' name='edit' type=submit>modifier commentaire</button><button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400' name='rmv' type='submit'>supprimer commentaire</button>"
+                            . "</div></form>";
                     }
                 }
                 // on verifie si le commentaire courant a ete poste par l'utilisateur courant
                 // cela permet de lui donner l'option de modifier ou supprimer son commentaire ainsi que de l'empecher d'en poser un nouveau
             } else $res .= "";
+            $res.="<div class='justify-center shadow rounded mx-96 mt-5 content-center'><p class='text-center'>";
             $res .= $data['commentaire'];
-            $res .= "";
+            $res .= "</p></div>";
         }
         if (!$alreadyCommented) {
             //si l'utilisateur n'as pas encore commenter cette serie, on place un champ prevu a cet effet
@@ -95,7 +99,7 @@ class AfficheurCommentaires extends Afficheur
                 . "<button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400' type=submit name='add'>commenter</button>"
                 . "</form>";
         }
-        $res .= "<a href=?action=afficher-serie&id=$id><button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400'>retour à la serie</button></a> </div>";
+        $res .= "<a href=?action=afficher-serie&id=$id><button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400'>retour à la serie</button></a> </div></section>";
         return $res;
     }
 }
