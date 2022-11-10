@@ -65,13 +65,6 @@ class AfficheurCatalogue extends Afficheur
             $html .= "<option value=$value[$key]> $options[$key]</option>";
         }
         $html.="</select></form></div>";
-        /*
-        $html .= "<input type='submit' name='submit' value='Envoyer' /><br>";
-        $html .= "<label>Trie par : </label> <input type='radio' name='trie' value='titre'/><label style='margin-right:40px'>titre</label>";
-        $html .= "<input type='radio' name='trie' value='date'/> <label style='margin-right:40px'>Date</label>";
-        $html .= "<input type='radio' name='trie' value='nbEpisodes'/><label style='margin-right:40px'>nombre d'Episode</label>";
-        $html .= "</form>";
-        $html .= "</div>";*/
 
         return $html;
     }
@@ -89,8 +82,9 @@ class AfficheurCatalogue extends Afficheur
             $mot = $tab[$i];
             $tab1 = $this->requeteRech($mot, "titre", $seriesAffichees);
             $tab2 = $this->requeteRech($mot, "descriptif", $tab1);
-            $res .= $this->trierFilms($_POST['tri'], $tab2);
+            $seriesAffichees = $tab2;
         }
+        $res .= $this->trierFilms($_POST['tri'], $tab2);
         $res .="</div>";
         return $res;
     }
