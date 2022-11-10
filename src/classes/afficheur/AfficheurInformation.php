@@ -58,6 +58,7 @@ class AfficheurInformation extends Afficheur
         $res .= "<a href='?action=changer-Information&mod=Nom'><button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400'>Changer de nom</button></a>";
         $res .= "<a href='?action=changer-Information&mod=Prenom'><button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400'>Changer de prénom</button></a>";
         $res .= "<a href='?action=changer-Information&mod=Carte'><button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400'>changer de carte</button></a>";
+        $res .= "<a href='?action=changer-Information&mod=Suppr'><button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400'>supprimer mon compte</button></a>";
         $res .= "</div>";
         return $res;
     }

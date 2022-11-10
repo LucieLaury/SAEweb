@@ -44,13 +44,15 @@ class AfficheurChangement extends Afficheur
                 $res .= "<label>entrez la nouvelle carte</label>";
                 $res .= "<input type='text' placeholder='nouvelle carte' minlength='16' maxlength='20' name='nCar'>";
                 break;
+            case 'Suppr':
+                break;
             default :
                 $res .= "une erreur est survenue <a href='?action=Information'>retour aux informations</a>";
                 $failed = true;
                 break;
         }
         if (!$failed) {
-            $res .= "<label>entre le mot de passe actuel</label>";
+            $res .= "<label>entrez le mot de passe actuel pour confirmer</label>";
             $res .= "<input type='password' placeholder='mot de passe' name='pass'>";
         }
         $res .= "<button type='submit'>valider</button></form></div>";
@@ -110,6 +112,14 @@ class AfficheurChangement extends Afficheur
                         $query->execute([$carte,$mail]);
                         $res .= "Carte modifiée avec succes";
                     } else $res.= "carte invalide";
+                    break;
+                case 'Suppr': foreach (['episodesVisionnes','feedback','utilisateur'] as $table){
+                    $req = "delete from $table where email = ?";
+                    $query = $bd->prepare($req);
+                    $query->execute([$mail]);
+                    header('location:Index.php');
+                }
+                unset($_SESSION['user']);
                     break;
                 default :
                     $res .= "une erreur est survenue";
