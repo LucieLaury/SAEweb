@@ -239,12 +239,9 @@ class User
         $resultat->bindParam(1, $idSerie);
         $resultat->execute();
         $nbEpisodesTotal = $resultat->fetch();
-        print "1";
         //si le nombre d'épisodes regardés est égal au nombre d'épisodes total : update
         if($nbEpisodesRegardes[0]==$nbEpisodesTotal[0]){
-            print "2";
             $this->updateListeType(self::ENCOURS,$idSerie,0);
-            print "3";
             $this->updateListeType(self::VISIONNER,$idSerie,1);
         }
     }
