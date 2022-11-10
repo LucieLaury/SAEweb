@@ -14,6 +14,8 @@ use PDO;
 
 class Authentification
 {
+    private const minLength = 9;
+
     /**
      * @throws BadPasswordException
      * @throws AlreadyRegisteredEmailException
@@ -24,7 +26,7 @@ class Authentification
         $bd = ConnectionFactory::makeConnection();
         // Verify strength of password
         if(strlen($noCarte) !== 16) throw new CardNotExistingException("La longueur ne correspond pas a un code valide");
-        if(!self::checkPassStrength($password, 1)) throw new BadPasswordException("Le mot de passe ne correspond pas à nos critères");
+        if(!self::checkPassStrength($password, self::minLength)) throw new BadPasswordException("Le mot de passe ne correspond pas à nos critères");
         // Verify if email already exist
         $query = $bd->prepare("SELECT * FROM utilisateur WHERE email = ?");
         $query->bindParam(1, $email);
@@ -51,10 +53,10 @@ class Authentification
 
     public static function checkPassStrength(string $password, int $minLength) : bool {
         $length = strlen($password) > $minLength;
-        $digit = true; // preg_match("#\d#", $password);
-        $special = true; // preg_match("#\W#", $password);
-        $lower = true; // preg_match("#[a-z]#", $password);
-        $upper = true; // preg_match("#[A-Z]]#", $password);
+        $digit = preg_match("#\d#", $password);
+        $special = preg_match("#\W#", $password);
+        $lower = preg_match("#[a-z]#", $password);
+        $upper = preg_match("#[A-Z]]#", $password);
         return ($length && $digit && $special && $lower && $upper);
     }
 
@@ -123,7 +125,7 @@ class Authentification
     public static function changeForgotPWD(string $token, string $email, string $pwd): void
     {
         self::verifyToken($token, $email);
-        if(!self::checkPassStrength($pwd, 1)) throw new BadPasswordException("Le mot de passe ne correspond pas à nos critères");
+        if(!self::checkPassStrength($pwd, self::minLength)) throw new BadPasswordException("Le mot de passe ne correspond pas à nos critères");
         $db = ConnectionFactory::makeConnection();
         $hashPWD = password_hash($pwd, PASSWORD_DEFAULT, ['cost' => 12]);
         $query = $db->prepare("UPDATE utilisateur SET pwd = :pwd WHERE email = :mail");
