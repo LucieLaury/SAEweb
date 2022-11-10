@@ -16,25 +16,27 @@ class AfficheurRegistrer extends Afficheur
         $html = "";
         if($_SERVER['REQUEST_METHOD'] === "GET") {
             $html = <<<END
+                <div class='max-w-2xl' style='text-align: left; margin-left: 3%; padding: 1%'>
                 <script src="javascript/register.js"></script>
                 <form action="" method="post">
                     <label>Identifiant</label>
-                    <input type="email" name="email" placeholder="bernard@mail.com" required>
+                    <input type="email" name="email" style='margin-bottom: 1%' class="shadow rounded" placeholder="bernard@mail.com" required>
                     <br>
                     <label>Nom</label>
-                    <input type="text" name="nom" placeholder="LERMITE" required><br>
-                    <lab>Prenom</lab>
-                    <input type="text" name="prenom" placeholder="Bernard" required><br>
+                    <input type="text" name="nom" style='margin-bottom: 1%' class="shadow rounded" placeholder="LERMITE" required><br>
+                    <lab>Prénom</lab>
+                    <input type="text" name="prenom" style='margin-bottom: 1%'class="shadow rounded" placeholder="Bernard" required><br>
                     <label>Numéro de carte bancaire</label>
-                    <input type="text" name="noCarte" placeholder="0000 0000 0000 0000"><br>
-                    <label>Password</label>
-                    <input id="firstPWD" type="password" name="password" required><br>
+                    <input type="text" name="noCarte" style='margin-bottom: 1%' class="shadow rounded" placeholder="0000 0000 0000 0000"><br>
+                    <label>Mot de passe</label>
+                    <input id="firstPWD" type="password" style='margin-bottom: 1%' class="shadow rounded" name="password" required><br>
                    
-                    <label>Confirm Password</label>
-                    <input id="secondPWD" type="password" name="confPwd" onchange="verifPWD()">
-                    <button id="button" type="submit" disabled>S'enregistrer</button>
+                    <label>Confirmer le mot de passe</label>
+                    <input id="secondPWD" type="password" style='padding: 1%' class="shadow rounded" name="confPwd" onchange="verifPWD()">
+                    <button id="button" type="submit" class="mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400" disabled>S'enregistrer</button>
                 </form>
-                <a href="">Vous avez déjà un compte ?</a>
+                <a href="?action=default"><button class="mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400">Vous avez déjà un compte?</button></a>
+                </div>
             END;
         } else {
             $mail = $_POST['email'];
