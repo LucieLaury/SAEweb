@@ -74,7 +74,6 @@ class AfficheurCatalogue extends Afficheur
 
 
     public function afficherRecherche():string{
-        print $_POST['tri'];
         $res = $this->affichageFormulaire();
         $res .= "<div style='display: flex;justify-content: space-around; flex-direction: row; flex-wrap: wrap'>";
         //séparation des mots de la methode post
@@ -116,77 +115,40 @@ class AfficheurCatalogue extends Afficheur
     public function trierFilms(string $trie='titre', array $serieAff):string{
         $tabtrie=[];
         $tabkeys = array_keys($serieAff);
-        print_r($tabkeys);
         $i=0;
         $indextrie = 0;
         while (count($tabkeys)>0){
             if(!array_key_exists($i, $tabkeys)){
                 $i=0;
             } else {
-                print "<br>-----------------------------iteration $i<br><br>";
-                $titre1 = $tabkeys[$i];
+                $titre1 = $tabkeys[0];
+                $jbis = 0;
+                $j = 0;
                 $serie1 = Serie::find($titre1);
-                $value1 = $serie1->__get($trie);
-                print $titre1;
-                print $value1 . "<br><br>";
                 $serieMin = $serie1;
                 $valueMin = $serieMin->__get($trie);
-                $jbis = $i;
-                for ($j = $i + 1; $j < count($tabkeys); $j++) {
+
+                for ($j; $j < count($tabkeys); $j++) {
                     if(array_key_exists($j, $tabkeys)) {
-                        print "-----------------------------iteration j<br><br>";
                         $titre2 = $tabkeys[$j];
                         $serie2 = Serie::find($titre2);
                         $value2 = $serie2->__get($trie);
-                        print '          j : ' . $titre2;
-                        print $value2 . "<br><br>";
                         if ($value2 <= $valueMin) {
                             $serieMin = $serie2;
                             $valueMin = $value2;
                             $jbis = $j;
-                            print "SERIEMIN : " . $titre2 . "    jbis : " . $jbis . "<br>";
                         }
                     }
                 }
-                print "SERIEMIN------FIN : " . $serieMin->__get('titre') . "<br><br>";
                 $tabtrie[$indextrie] = $serieMin->__get('titre');
                 unset($tabkeys[$jbis]);
                 $i++;
                 $indextrie++;
-                print_r($tabkeys);
-                print"<br>";
-                print_r($tabtrie);
+                $tabkeys = $this->refonteTabKey($tabkeys);
             }
         }
 
-        /*foreach ($serieAff as $val1){
-            $min1 = $val1->__get($trie);
-            $j=0;
-            $min2 = $min1;
-            foreach ($serieAff as $val2){
-                if ($j>=$i+1){
-                    if (gettype($val2)=="object") {
-                        $valtri = $val2->__get($trie);
-                        if ($valtri < $min2) {
-                            $min2 = $valtri;
-                            $memo = $val2;
-                        }
-                    }
-                }
-                $j++;
-            }
-            if ($min2 < $min1){
-                $tabtrie[$i] = $memo;
-            } else {
-                $tabtrie[$i] = $val1;
-            }
-
-            echo "<br><br>";
-            $i++;
-        }*/
-
         $res="";
-
         foreach ($tabtrie as $titre) {
             $serie = Serie::find($titre);
             $re = new RenderSerie($serie);
@@ -196,8 +158,13 @@ class AfficheurCatalogue extends Afficheur
         return $res;
     }
 
-
-
-
-
+    public function refonteTabKey(array $tabkey): array{
+        $newtab = [];
+        $i = 0;
+        foreach ($tabkey as $value){
+            $newtab[$i] = $value;
+            $i++;
+        }
+        return $newtab;
+    }
 }
