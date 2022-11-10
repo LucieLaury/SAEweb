@@ -165,15 +165,15 @@ class AfficheurSerie extends Afficheur
         }
         if(!$alreadyNoted || $this->updatingNote){
             $res.= "<form method='post'>".
-                    "<input type='number' name='note' placeholder='note /5' max='5'>".
-                    "<button name='Bnote' type='submit'>Noter</button>";
+                    "<input type='number' class='shadow rounded' name='note' placeholder='note /5' max='5'>".
+                    "<button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400' name='Bnote' type='submit'>Noter</button>";
         }
         else{
             $res.= "<form method='post'>".
                 "<button name='BUpdateNote' type='submit'>Changer ma note</button></br>"
                 ."<button name='BDeleteNote' type='submit'>Supprimer ma note</button>";
         }
-        $res .= "</form><a href=?action=afficher-commentaires&id=$id style='margin-top: 30px'>Accéder aux commentaires</a></div>";
+        $res .= "</form><a href=?action=afficher-commentaires&id=$id style='margin-top: 30px'><button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400'>Accéder aux commentaires</button></a></div>";
         return $res;
     }
 }

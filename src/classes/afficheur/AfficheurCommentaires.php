@@ -21,6 +21,7 @@ class AfficheurCommentaires extends Afficheur
 
     public function execute(): string
     {
+        session_start();
         // recuperation de l'email de l'utilisateur courant
         $user = $_SESSION['user'];
         $user = unserialize($user);
@@ -63,38 +64,38 @@ class AfficheurCommentaires extends Afficheur
         $query->bindParam(1, $_GET['id']);
         $query->execute();
         $alreadyCommented = false;
-        $res = "Commentaires de votre serie :</br>";
+        $res = "<div class='justify-center mx-auto'> <label class='text-center font-bold block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5' >Commentaires de votre serie :</label>";
         while ($data = $query->fetch(PDO::FETCH_ASSOC)) {
             //parcours de tous les commentaires de la serie
             if ($data['commentaire'] != null) {
-                $res .= $data["email"] . "</br>";
+                $res .= $data["email"];
                 if ($mail == $data["email"]) {
                     $alreadyCommented = true;
                     if ($this->edit) {
                         $res .= "<form method=post>"
-                            . "<button name='valEdit' type=submit>valider</button><br>"
+                            . "<button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400' name='valEdit' type=submit>valider</>"
                             . "<textarea type=text name=comm placeholder='votre commentaire' style='min-height: 100px;min-width: 400px;max-height: 100px;max-width: 400px;'></textarea>"
                             . "</form>";
                     } else {
                         $res .= "<form method=post>"
-                            . "<button name='edit' type=submit>modifier commentaire</button><button name='rmv' type='submit'>supprimer commentaire</button><br>"
+                            . "<button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400' name='edit' type=submit>modifier commentaire</><button name='rmv' type='submit'>supprimer commentaire</button>"
                             . "</form>";
                     }
                 }
                 // on verifie si le commentaire courant a ete poste par l'utilisateur courant
                 // cela permet de lui donner l'option de modifier ou supprimer son commentaire ainsi que de l'empecher d'en poser un nouveau
-            } else $res .= "</br>";
-            $res .= $data['commentaire'] . "</br>";
-            $res .= "</br></br>";
+            } else $res .= "";
+            $res .= $data['commentaire'];
+            $res .= "";
         }
         if (!$alreadyCommented) {
             //si l'utilisateur n'as pas encore commenter cette serie, on place un champ prevu a cet effet
             $res .= "<form method=post>"
-                . "<textarea type=text name=comm placeholder='votre commentaire' style='min-height: 100px;min-width: 400px;max-height: 100px;max-width: 400px;'></textarea>"
-                . "</br><button type=submit name='add'>commenter</button>"
+                . "<textarea type=text class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5' name=comm placeholder='votre commentaire' style='min-height: 100px;min-width: 400px;max-height: 100px;max-width: 400px;'></textarea>"
+                . "<button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400' type=submit name='add'>commenter</button>"
                 . "</form>";
         }
-        $res .= "<a href=?action=afficher-serie&id=$id>retour à la serie</a>";
+        $res .= "<a href=?action=afficher-serie&id=$id><button class='mx-auto block shadow rounded-2xl p-1 px-3 font-medium block mx-2 mt-5 bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-blue-500 hover:to-green-400'>retour à la serie</button></a> </div>";
         return $res;
     }
 }
