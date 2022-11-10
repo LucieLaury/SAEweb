@@ -26,6 +26,7 @@ class AfficheurActivation extends Afficheur
             $user = unserialize($_SESSION['user']);
             $email = $user->email;
             Authentification::activate($token, $email);
+            header("location:?action=accueil-utilisateur");
             $html = "";
         }
 

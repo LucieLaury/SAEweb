@@ -7,6 +7,8 @@ use iutnc\netVOD\afficheur\AfficheurCatalogue;
 use iutnc\netVOD\afficheur\AfficheurCommentaires;
 use iutnc\netVOD\afficheur\AfficheurConnexion;
 use iutnc\netVOD\afficheur\AfficheurEpisode;
+use iutnc\netVOD\afficheur\AfficheurMDP;
+use iutnc\netVOD\afficheur\AfficheurOubli;
 use iutnc\netVOD\afficheur\AfficheurRegistrer;
 use iutnc\netVOD\afficheur\AfficheurSerie;
 
@@ -54,6 +56,12 @@ class Dispatcher
                 break;
             case "activation":
                 $act = new AfficheurActivation();
+                break;
+            case "forgot":
+                $act = new AfficheurOubli();
+                break;
+            case "changeMDP":
+                $act = new AfficheurMDP();
                 break;
                 //default
             default :

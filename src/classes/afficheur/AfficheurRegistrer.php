@@ -56,7 +56,7 @@ class AfficheurRegistrer extends Afficheur
                 Authentification::register($mail, $mdp, $nom, $prenom, $noCarte);
                 Authentification::loadProfile($mail);
                 try {
-                    Authentification::generateToken($mail);
+                    Authentification::generateToken($mail, 0);
                 } catch (Exception|InvalidUserException $e) {
                     print "<script>console.log('$e')</script>";
                 }

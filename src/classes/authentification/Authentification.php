@@ -73,7 +73,7 @@ class Authentification
      * @throws InvalidUserException
      * @throws Exception
      */
-    public static function generateToken(string $email) : void {
+    public static function generateToken(string $email, int $type) : void {
         $bd = ConnectionFactory::makeConnection();
         $query = $bd->prepare("SELECT * FROM utilisateur WHERE email = ?");
         $query->bindParam(1, $email); $query->execute();
@@ -85,24 +85,22 @@ class Authentification
         $query->bindParam("time", $time);
         $query->bindParam("mail", $email);
         $query->execute();
-        header("location:?action=activation&token=$token");
+        if ($type === 0)
+            header("location:?action=activation&token=$token");
+        elseif($type === 1)
+            header("location:?action=changeMDP&token=$token&mail=$email");
     }
 
     /**
      * @throws InvalidTokenException
      */
     public static function activate(string $token, string $email) : void {
+        self::verifyToken($token, $email);
         $db = ConnectionFactory::makeConnection();
-        $query = $db->prepare("SELECT token, DATE_FORMAT(timestemp, '%d/%m/%Y %T') as timestemp  FROM utilisateur WHERE email = ?");
+        $query = $db->prepare("UPDATE utilisateur SET activate = true, token = null WHERE email = ?");
         $query->bindParam(1, $email);
         $query->execute();
-        $data = $query->fetch();
-
-        if($token === $data['token'] and date("d/m/Y H:i:m", time()) < $data['timestemp'])  {
-            $query = $db->prepare("UPDATE utilisateur SET activate = true, token = null WHERE email = ?");
-            $query->bindParam(1, $email);
-            $query->execute();
-        } else throw new InvalidTokenException("Le token est expiré ou incorrect");
+        $query->closeCursor();
     }
 
     /**
@@ -116,6 +114,37 @@ class Authentification
         $data = $query->fetch(PDO::FETCH_ASSOC);
         $hash = $data['pwd'];
         if(!password_verify($passwd2check, $hash)) throw new BadPasswordException("Le mot de passe ou l'identifiant saisi est incorrect");
+    }
+
+    /**
+     * @throws InvalidTokenException
+     * @throws BadPasswordException
+     */
+    public static function changeForgotPWD(string $token, string $email, string $pwd): void
+    {
+        self::verifyToken($token, $email);
+        if(!self::checkPassStrength($pwd, 1)) throw new BadPasswordException("Le mot de passe ne correspond pas à nos critères");
+        $db = ConnectionFactory::makeConnection();
+        $hashPWD = password_hash($pwd, PASSWORD_DEFAULT, ['cost' => 12]);
+        $query = $db->prepare("UPDATE utilisateur SET pwd = :pwd WHERE email = :mail");
+        $query->bindParam("mail", $email);
+        $query->bindParam("pwd", $hashPWD);
+        $query->execute();
+        $query->closeCursor();
+    }
+
+    /**
+     * @throws InvalidTokenException
+     */
+    public static function verifyToken($token, $email) : void {
+        $db = ConnectionFactory::makeConnection();
+        $query = $db->prepare("SELECT token, DATE_FORMAT(timestemp, '%d/%m/%Y %T') as timestemp  FROM utilisateur WHERE email = ?");
+        $query->bindParam(1, $email);
+        $query->execute();
+        $data = $query->fetch();
+
+        if($token !== $data['token'] || date("d/m/Y H:i:m", time()) >= $data['timestemp'])
+            throw new InvalidTokenException("Le token est expiré ou incorrect");
     }
 
 
