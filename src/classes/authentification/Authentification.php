@@ -6,6 +6,7 @@ use iutnc\netVOD\db\ConnectionFactory;
 use iutnc\netVOD\exception\AlreadyRegisteredEmailException;
 use iutnc\netVOD\exception\BadPasswordException;
 use iutnc\netVOD\exception\CardNotExistingException;
+use iutnc\netVOD\exception\InvalidTokenException;
 use iutnc\netVOD\exception\InvalidUserException;
 use iutnc\netVOD\exception\NotAnEmailException;
 use iutnc\netVOD\user\User;
@@ -87,20 +88,21 @@ class Authentification
         header("location:?action=activation&token=$token");
     }
 
+    /**
+     * @throws InvalidTokenException
+     */
     public static function activate(string $token, string $email) : void {
         $db = ConnectionFactory::makeConnection();
         $query = $db->prepare("SELECT token, DATE_FORMAT(timestemp, '%d/%m/%Y %T') as timestemp  FROM utilisateur WHERE email = ?");
         $query->bindParam(1, $email);
         $query->execute();
         $data = $query->fetch();
-        $time = date("d/m/Y H:i:s", time());
-        $time2 = $data['timestemp'];
 
         if($token === $data['token'] and date("d/m/Y H:i:m", time()) < $data['timestemp'])  {
             $query = $db->prepare("UPDATE utilisateur SET activate = true, token = null WHERE email = ?");
             $query->bindParam(1, $email);
             $query->execute();
-        }
+        } else throw new InvalidTokenException("Le token est expiré ou incorrect");
     }
 
     /**

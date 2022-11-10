@@ -3,10 +3,14 @@
 namespace iutnc\netVOD\afficheur;
 
 use iutnc\netVOD\authentification\Authentification;
+use iutnc\netVOD\exception\InvalidTokenException;
 
 class AfficheurActivation extends Afficheur
 {
 
+    /**
+     * @throws InvalidTokenException
+     */
     public function execute(): string
     {
         if($_SERVER['REQUEST_METHOD'] === "GET") {

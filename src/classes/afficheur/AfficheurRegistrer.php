@@ -53,7 +53,7 @@ class AfficheurRegistrer extends Afficheur
                 try {
                     Authentification::generateToken($mail);
                 } catch (Exception|InvalidUserException $e) {
-                    print "<script>console.log($e)</script>";
+                    print "<script>console.log('$e')</script>";
                 }
             } catch (AlreadyRegisteredEmailException|BadPasswordException|NotAnEmailException|CardNotExistingException $e) {
                 $html = $e->getMessage();
