@@ -27,12 +27,15 @@ class RenderEpisode
 style='overflow: auto; '>";
         $res .= "<p><strong>$no</strong></p>";
         $res .= "<p><strong>$titre</strong></p>";
-        $res .= "<p>Durée : $duree minutes</p>";
+        $min = intval(abs($duree / 60));
+        $res .= "<p>Durée : $min minutes </p>";
 
         $res .= "</div>";
         $res .= "</a>";
 
         return $res;
     }
+
+
 
 }
