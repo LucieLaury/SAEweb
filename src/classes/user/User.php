@@ -71,7 +71,7 @@ class User
      * @param bool $val valeur de la liste à changer
      * @return void
      */
-    public function updateListeType(int $type, int $idSerie, bool $val): void{
+    public function updateListeType(int $type, int $idSerie, bool|int $val): void{
         $query = "";
         switch ($type) {
             case 1: // FAVORIS
@@ -92,30 +92,26 @@ class User
         //vérifie si la ligne existe + récupère les données
         $lineExist = false;
         if($data = $result->fetch(PDO::FETCH_NUM)) $lineExist = true;
-
         //si la ligne existe
         if($lineExist){
-            //la ligne existe, la valeur n'est pas en true : update dans feedback
-            if($data[1]==1){
-                $secondQuery="";
-                switch ($type) {
-                    case 1: // FAVORIS
-                        $secondQuery = "update feedback set videoPref=? where email = ? and idS =?";
-                        break;
-                    case 2: // EN COURS
-                        $secondQuery = "update feedback set enCours=? where email = ? and idS =?";
-                        break;
-                    case 3: // VISIONNEE
-                        $secondQuery = "update feedback set videoVisionnee=? where email = ? and idS =?";
-                        break;
-                }
-                $resultat = $bd->prepare($secondQuery);
-                $resultat->bindParam(1, $val);
-                $resultat->bindParam(2, $this->email);
-                $resultat->bindParam(3, $idSerie);
-                $resultat->execute();
+            //la ligne existe : update dans feedback
+            $secondQuery="";
+            switch ($type) {
+                case 1: // FAVORIS
+                    $secondQuery = "update feedback set videoPref= :boo where email = :em and idS = :ser";
+                    break;
+                case 2: // EN COURS
+                    $secondQuery = "update feedback set enCours= :boo where email = :em and idS = :ser";
+                    break;
+                case 3: // VISIONNEE
+                    $secondQuery = "update feedback set videoVisionnee= :boo where email = :em and idS =:ser";
+                    break;
             }
-            //ligne existante : on ignore
+            $resultat = $bd->prepare($secondQuery);
+            $resultat->bindParam(":boo", $val);
+            $resultat->bindParam(":em", $this->email);
+            $resultat->bindParam(":ser", $idSerie);
+            $resultat->execute();
         }
         //la ligne n'existe pas : insertion d'une ligne dans feedback
         else{
@@ -167,74 +163,89 @@ class User
         $row = $req->fetch();
         $idSerie = $row['serie_id'];
 
-        //récupération de la liste en Cours
-        $listeEnCours = $this->listeType(2);
+        //récupération de la liste listeVisionnee
+        $listeVisionnee = $this->listeType(3);
 
-        $trouveSerie = false;
+        $trouveVisionnee = false;
         //pour chaque serie dans la liste EnCours
-        foreach ($listeEnCours as $serieEnCours){
+        foreach ($listeVisionnee as $serieVisionnee){
             //vérifie si la liste est trouvee
-            if($serieEnCours->id==$idSerie){
-                $trouveSerie = true;
+            if($serieVisionnee->id==$idSerie){
+                $trouveVisionnee = true;
                 break;
             }
         }
 
-        //si la serie n'est pas trouvee
-        if(!$trouveSerie){
-            $this->updateListeType(2,$idSerie,true);
-        }
+        //si la liste n'est pas totalement visionnee :
+        if(!$trouveVisionnee){
+            $listeEnCours = $this->listeType(2);
 
-        //---2ère partie : enregistrement de l'épisode dans la table episodeVisionnes et appel de la fonction updateListeDejaVisonnee
-        $query = "select count(*) from episodesVisionnes where email = ? and idEpisode = ?";
-        $result = $db->prepare($query);
-        $result->bindParam(1, $this->email);
-        $result->bindParam(2, $idEpisode);
-        $result->execute();
-        $row=null;
-        //si aucun résultat n'est retourné : insertion
-        if(!($row=$result->fetch())){
-            $query = "insert into episodesVisionnes values (?,?,?,true)";
+            $trouveSerie = false;
+            //pour chaque serie dans la liste EnCours
+            foreach ($listeEnCours as $serieEnCours){
+                //vérifie si la liste est trouvee
+                if($serieEnCours->id==$idSerie){
+                    $trouveSerie = true;
+                    break;
+                }
+            }
+
+            //si la serie n'est pas trouvee
+            if(!$trouveSerie){
+                $this->updateListeType(2,$idSerie,true);
+            }
+
+            //---2ère partie : enregistrement de l'épisode dans la table episodeVisionnes et appel de la fonction updateListeDejaVisonnee
+            $query = "select visionne from episodesVisionnes where email = ? and idEpisode = ?";
             $result = $db->prepare($query);
             $result->bindParam(1, $this->email);
-            $result->bindParam(2, $idSerie);
-            $result->bindParam(3, $idEpisode);
+            $result->bindParam(2, $idEpisode);
             $result->execute();
+            $row=$result->fetch();
+
+            //si aucun résultat n'est retourné : insertion
+            if(!$row){
+                $query = "insert into episodesVisionnes values (?,?,?,1)";
+                $result = $db->prepare($query);
+                $result->bindParam(1, $this->email);
+                $result->bindParam(2, $idSerie);
+                $result->bindParam(3, $idEpisode);
+                $result->execute();
+            }
+            $this->updateListeDejaVisionnee($idSerie);
         }
-        $this->updateListeDejaVisionnee($e);
     }
 
     /**
      * Invoquée par updateListeEnCours, update de la liste Deja Visionnee
-     * @param Episode|Serie $serie, conversion en série dans tous les cas
+     * @param int $idSerie,
      * @return void
      */
-    public function updateListeDejaVisionnee(Episode|Serie $serie){
-        //si le paramètre est un épisode : cherche la série liée à l'épisode
-        if(is_a($serie,"Episode")){
-            $serie = Serie::find($serie->idSerie);
-        }
-        $id = $serie->id;
-        $bd = ConnectionFactory::makeConnection();
+    public function updateListeDejaVisionnee(int $idSerie){
 
         //récupération du nombre d'épisodes regardés
-        $query = "select count(*) from episodesVisionnes where email = ? and idSerie = ?";
+        $bd = ConnectionFactory::makeConnection();
+        $query = "select count(*) from episodesVisionnes where email = ? and idSerie = ? and visionne = 1";
         $result = $bd->prepare($query);
         $result->bindParam(1, $this->email);
-        $result->bindParam(2, $id);
+        $result->bindParam(2, $idSerie);
         $result->execute();
-        $nbEpisodesRegardes = (int) $result->fetch();
+        $nbEpisodesRegardes = $result->fetch();
 
         //récupération du nombre total d'épisodes
-        $query2 = "select count(*) from episode where idSerie = ?";
-        $resultat = $bd->prepare($query2);
-        $resultat->bindParam(1, $id);
+        $db = ConnectionFactory::makeConnection();
+        $query2 = "select count(*) from episode where serie_id = ?";
+        $resultat = $db->prepare($query2);
+        $resultat->bindParam(1, $idSerie);
         $resultat->execute();
-        $nbEpisodesTotal = (int) $resultat->fetch();
-
-        if($nbEpisodesRegardes==$nbEpisodesTotal){
-            $this->updateListeType(2,$id,false);
-            $this->updateListeType(3,$id,true);
+        $nbEpisodesTotal = $resultat->fetch();
+        print "1";
+        //si le nombre d'épisodes regardés est égal au nombre d'épisodes total : update
+        if($nbEpisodesRegardes[0]==$nbEpisodesTotal[0]){
+            print "2";
+            $this->updateListeType(self::ENCOURS,$idSerie,0);
+            print "3";
+            $this->updateListeType(self::VISIONNER,$idSerie,1);
         }
     }
 
