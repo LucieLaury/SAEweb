@@ -18,7 +18,7 @@ class AfficheurEpisode extends Afficheur
 
         $idS=$episode->idSerie;
 
-        //Update de la liste en cours
+        //Update de 2 listes : liste des séries en cours, et la liste des séries visionnées
         session_start();
         $user = $_SESSION['user'];
         $user = unserialize($user);

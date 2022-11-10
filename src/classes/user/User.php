@@ -31,6 +31,11 @@ class User
         $this->noCarte = $noCarte;
     }
 
+    /**
+     * Fonction qui retourne la liste en fonction de son titre
+     * @param int $type type de la liste
+     * @return array liste
+     */
     public function listeType(int $type): array {
         $tab = [];
         $query = "";
@@ -55,6 +60,13 @@ class User
         return $tab;
     }
 
+    /**
+     * Fonction qui effectue une update d'une liste par rapport à une série
+     * @param int $type type de la série
+     * @param int $idSerie id de la série où effectuer une update
+     * @param bool $val valeur de la liste à changer
+     * @return void
+     */
     public function updateListeType(int $type, int $idSerie, bool $val): void{
         $query = "";
         switch ($type) {
@@ -132,11 +144,16 @@ class User
     }
 
     /**
+     * Invoquée par afficheurEpisode, modifie la liste En Cours et la table episodesVisionnes
+     * Invoque par la suite updateListeDejaVisionne
      * @param Episode $e épisode ajouté à la série
      * @return void
      */
     public function updateListeEnCours(Episode $e): void
     {
+        //---1ère partie : modification de la liste en Cours
+
+        //récupération de l'ID de la série
         $db = ConnectionFactory::makeConnection();
         $idEpisode = $e->id;
         $req = $db->prepare("SELECT serie_id from episode 
@@ -152,14 +169,68 @@ class User
         $trouveSerie = false;
         //pour chaque serie dans la liste EnCours
         foreach ($listeEnCours as $serieEnCours){
+            //vérifie si la liste est trouvee
             if($serieEnCours->id==$idSerie){
                 $trouveSerie = true;
                 break;
             }
         }
+
         //si la serie n'est pas trouvee
         if(!$trouveSerie){
             $this->updateListeType(2,$idSerie,true);
+        }
+
+        //---2ère partie : enregistrement de l'épisode dans la table episodeVisionnes et appel de la fonction updateListeDejaVisonnee
+        $query = "select count(*) from episodesVisionnes where email = ? and idEpisode = ?";
+        $result = $db->prepare($query);
+        $result->bindParam(1, $this->email);
+        $result->bindParam(2, $idEpisode);
+        $result->execute();
+        $row=null;
+        //si aucun résultat n'est retourné : insertion
+        if(!($row=$result->fetch())){
+            $query = "insert into episodesVisionnes values (?,?,?,true)";
+            $result = $db->prepare($query);
+            $result->bindParam(1, $this->email);
+            $result->bindParam(2, $idSerie);
+            $result->bindParam(3, $idEpisode);
+            $result->execute();
+        }
+        $this->updateListeDejaVisionnee($e);
+    }
+
+    /**
+     * Invoquée par updateListeEnCours, update de la liste Deja Visionnee
+     * @param Episode|Serie $serie, conversion en série dans tous les cas
+     * @return void
+     */
+    public function updateListeDejaVisionnee(Episode|Serie $serie){
+        //si le paramètre est un épisode : cherche la série liée à l'épisode
+        if(is_a($serie,"Episode")){
+            $serie = Serie::find($serie->idSerie);
+        }
+        $id = $serie->id;
+        $bd = ConnectionFactory::makeConnection();
+
+        //récupération du nombre d'épisodes regardés
+        $query = "select count(*) from episodesVisionnes where email = ? and idSerie = ?";
+        $result = $bd->prepare($query);
+        $result->bindParam(1, $this->email);
+        $result->bindParam(2, $id);
+        $result->execute();
+        $nbEpisodesRegardes = (int) $result->fetch();
+
+        //récupération du nombre total d'épisodes
+        $query2 = "select count(*) from episode where idSerie = ?";
+        $resultat = $bd->prepare($query2);
+        $resultat->bindParam(1, $id);
+        $resultat->execute();
+        $nbEpisodesTotal = (int) $resultat->fetch();
+
+        if($nbEpisodesRegardes==$nbEpisodesTotal){
+            $this->updateListeType(2,$id,false);
+            $this->updateListeType(3,$id,true);
         }
     }
 
