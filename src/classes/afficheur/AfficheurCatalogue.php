@@ -116,7 +116,7 @@ class AfficheurCatalogue extends Afficheur
      * @param array $serieAff le tableau des séries qui vont être affichées
      * @return string l'html d'affichage des séries.
      */
-    public function trierFilms(string $trie='titre', array $serieAff):string{
+    public function trierFilms(string $trie, array $serieAff):string{
         $tabtrie=[];
         $tabkeys = array_keys($serieAff);
         $i=0;
