@@ -18,6 +18,7 @@ class Serie
     private array $episodes;
     private int $nbEpisodes;
     private string $img;
+    private float $note;
 
     //CONST
     public function __construct(int $id, string $ti, string $desc, int $ann, string $da, string $img)
@@ -30,6 +31,7 @@ class Serie
         $this->nbEpisodes = 0;
         $this->img = $img;
         $this->episodes = array();
+        $this->note = $this->calcMoySerie($id);
     }
 
 
@@ -115,6 +117,25 @@ class Serie
     {
         if (property_exists($this, $attribut)) return $this->$attribut;
         throw new ProprieteInexistanteException ("$attribut: propriété inexistante");
+    }
+
+    private function calcMoySerie($id): float
+    {
+        $bd = ConnectionFactory::makeConnection();
+        $query = $bd->prepare("select note, email from feedback where idS = ?");
+        $query->bindParam(1, $id);
+        $query->execute();
+        $tot = 0;
+        $div = 0;
+        while ($data = $query->fetch(\PDO::FETCH_ASSOC)) {
+            if ($data['note'] != null) {
+                $tot += $data['note'];
+                $div++;
+            }
+        }
+        if ($div != 0) $res = $tot / $div;
+        else $res = 0;
+        return $res;
     }
 
 

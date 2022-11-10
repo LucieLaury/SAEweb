@@ -8,3 +8,8 @@ function verifPWD() {
 		document.getElementById("button").disabled = false;
 	}
 }
+
+function submitForm(){
+	alert('apel');
+	document.form.submit();
+}

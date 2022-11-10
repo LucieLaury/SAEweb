@@ -131,7 +131,7 @@ class AfficheurCatalogue extends Afficheur
                         $titre2 = $tabkeys[$j];
                         $serie2 = Serie::find($titre2);
                         $value2 = $serie2->__get($trie);
-                        if ($value2 <= $valueMin) {
+                        if (($value2 <= $valueMin && $trie != 'note') ||($value2 >= $valueMin && $trie == 'note')) {
                             $serieMin = $serie2;
                             $valueMin = $value2;
                             $jbis = $j;
