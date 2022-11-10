@@ -2,6 +2,7 @@
 
 namespace iutnc\netVOD\dispatcher;
 use iutnc\netVOD\afficheur\AccueilUser;
+use iutnc\netVOD\afficheur\AfficheurActivation;
 use iutnc\netVOD\afficheur\AfficheurCatalogue;
 use iutnc\netVOD\afficheur\AfficheurCommentaires;
 use iutnc\netVOD\afficheur\AfficheurConnexion;
@@ -50,6 +51,9 @@ class Dispatcher
                 //cas du register
             case "register":
                 $act = new AfficheurRegistrer();
+                break;
+            case "activation":
+                $act = new AfficheurActivation();
                 break;
                 //default
             default :

@@ -2,10 +2,12 @@
 
 namespace iutnc\netVOD\afficheur;
 
+use Exception;
 use iutnc\netVOD\authentification\Authentification;
 use iutnc\netVOD\exception\AlreadyRegisteredEmailException;
 use iutnc\netVOD\exception\BadPasswordException;
 use iutnc\netVOD\exception\CardNotExistingException;
+use iutnc\netVOD\exception\InvalidUserException;
 use iutnc\netVOD\exception\NotAnEmailException;
 
 class AfficheurRegistrer extends Afficheur
@@ -48,7 +50,11 @@ class AfficheurRegistrer extends Afficheur
             try {
                 Authentification::register($mail, $mdp, $nom, $prenom, $noCarte);
                 Authentification::loadProfile($mail);
-                header("location:?action=accueil-utilisateur");
+                try {
+                    Authentification::generateToken($mail);
+                } catch (Exception|InvalidUserException $e) {
+                    print "<script>console.log($e)</script>";
+                }
             } catch (AlreadyRegisteredEmailException|BadPasswordException|NotAnEmailException|CardNotExistingException $e) {
                 $html = $e->getMessage();
             }

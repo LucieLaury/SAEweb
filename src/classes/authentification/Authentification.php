@@ -45,11 +45,7 @@ class Authentification
         $insert->execute();
         $query->closeCursor();
         $insert->closeCursor();
-        try {
-            self::generateActivationToken($email);
-        } catch (Exception $e) {
-            print $e->getMessage();
-        }
+
     }
 
     public static function checkPassStrength(string $password, int $minLength) : bool {
@@ -76,13 +72,13 @@ class Authentification
      * @throws InvalidUserException
      * @throws Exception
      */
-    public static function generateActivationToken(string $email) : void {
+    public static function generateToken(string $email) : void {
         $bd = ConnectionFactory::makeConnection();
         $query = $bd->prepare("SELECT * FROM utilisateur WHERE email = ?");
         $query->bindParam(1, $email); $query->execute();
         if($query->rowCount() === 0) throw new InvalidUserException("Cet email ne correspond a aucun compte");
-        $token = bin2hex(random_bytes(512));
-        $time = date("d/m/Y H:i:s",time() + 60 * 15);
+        $token = bin2hex(random_bytes(32));
+        $time = date("d/m/Y H:i:s",time() + 60*15);
         $query = $bd->prepare("UPDATE utilisateur SET token = :token ,timestemp = str_to_date(:time, '%d/%m/%Y %T') WHERE email = :mail");
         $query->bindParam("token", $token);
         $query->bindParam("time", $time);
@@ -93,11 +89,14 @@ class Authentification
 
     public static function activate(string $token, string $email) : void {
         $db = ConnectionFactory::makeConnection();
-        $query = $db->prepare("SELECT token, timestemp WHERE email = ?");
-        $query->bindParam($email);
+        $query = $db->prepare("SELECT token, DATE_FORMAT(timestemp, '%d/%m/%Y %T') as timestemp  FROM utilisateur WHERE email = ?");
+        $query->bindParam(1, $email);
         $query->execute();
         $data = $query->fetch();
-        if($token === $data['token'] and date("d/m/Y H:i:m", time()) < $data['timestemp'] )  {
+        $time = date("d/m/Y H:i:s", time());
+        $time2 = $data['timestemp'];
+
+        if($token === $data['token'] and date("d/m/Y H:i:m", time()) < $data['timestemp'])  {
             $query = $db->prepare("UPDATE utilisateur SET activate = true, token = null WHERE email = ?");
             $query->bindParam(1, $email);
             $query->execute();
