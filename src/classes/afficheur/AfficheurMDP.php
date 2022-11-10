@@ -21,7 +21,7 @@ class AfficheurMDP extends Afficheur
                     <label>Nouveau mdp</label>
                     <input type="password" name="firstPWD" id="firstPWD" required>
                     <input type="password" name="secondPWD" id="secondPWD" onchange="verifPWD()" required>
-                    <button type="submit" disabled>Valider</button> 
+                    <button type="submit" id="button" disabled>Valider</button> 
                 </form>
             end;
         } else {
