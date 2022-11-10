@@ -9,6 +9,9 @@ class AfficheurConnexion extends Afficheur
 {
     public function execute(): string
     {
+        session_start();
+        if(isset($_SESSION['user'])) unset($_SESSION['user']);
+        session_destroy();
         if($_SERVER['REQUEST_METHOD'] === "GET") {
             $html = <<<END
                 <section id="sec" class="flex flex-col justify-center mt-20 h-full my-auto" >
