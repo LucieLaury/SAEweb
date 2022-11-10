@@ -19,11 +19,15 @@ class AfficheurCatalogue extends Afficheur
 
     public function execute(): string
     {
+        session_start();
         $res="";
         if ($this->http_method == "GET"){
+            if(!(isset($_SESSION['user'])))header("location:?action=");
+
             $res= $this->affichageFormulaire();
             $res .= $this->affichageGlo();
         } else if ($this->http_method =="POST"){
+
             $res = $this->afficherRecherche();
         }
 

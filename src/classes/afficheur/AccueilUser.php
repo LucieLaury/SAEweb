@@ -13,6 +13,8 @@ class AccueilUser extends Afficheur
         session_start();
 
         if ($this->http_method == "GET") {
+            if(!(isset($_SESSION['user'])))header("location:?action=");
+
             $res = "<label class=' mx-auto block shadow text-left pl-5 underline text-2xl bg-blue-500 rounded-2xl'>Mes Favoris</label>";
             $res .= "<div class='flex flex-row'>";
             $user = $_SESSION['user'];
